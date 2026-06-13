@@ -3,25 +3,22 @@ package main
 import "fmt"
 
 func main() {
-	const username = "admin"
-	const password = "VAD216"
+	var age int
 
-	var userName string
-	var userPassword string
+	fmt.Println("Write how old are you:")
 
-	fmt.Println("Write your username and password to log in")
+	_, err := fmt.Scanln(&age)
 
-	fmt.Scanln(&userName)
-	fmt.Scanln(&userPassword)
-
-	if userName == username && userPassword == password {
-		fmt.Println("\nLogin successful")
-	} else if userName == username && userPassword != password {
-		fmt.Println("\nincorect password")
-	} else if userName != username && userPassword == password {
-		fmt.Println("\nIncorrect Name")
-	} else {
-		fmt.Println("Invalid credentials")
+	if err != nil {
+		fmt.Println("Incorrect input")
+		return
 	}
 
+	if age < 16 {
+		fmt.Println("\nAccess denied")
+	} else if age == 16 || age == 17 {
+		fmt.Println("\nLimited access")
+	} else {
+		fmt.Println("\nFull access")
+	}
 }
