@@ -3,22 +3,49 @@ package main
 import "fmt"
 
 func main() {
-	var age int
 
-	fmt.Println("Write how old are you:")
+	const adminName = "admin"
+	const adminPassword = "VAD216"
 
-	_, err := fmt.Scanln(&age)
+	var username string
+	var userPassword string
+	var userAge int
+
+	fmt.Println("Write your username:")
+	fmt.Scanln(&username)
+
+	if username == adminName {
+		fmt.Println("Write your admin's password: ")
+		_, err := fmt.Scanln(&userPassword)
+
+		if err != nil {
+			fmt.Println("\nIncorrect admin's input\n\nAccess Blocked; Reason: Attack Try")
+			return
+		}
+
+		if userPassword == adminPassword {
+			fmt.Println("\n\nAdmin mode enabled\n ") //Last \n just for terminal appearence(just for me)
+			return
+		} else {
+			fmt.Println("\nIncorrect admin's input\n\nAccess Blocked; Reason: Attack Try")
+			return
+		}
+	}
+
+	fmt.Println("\nSucces! We added your name, write your password:")
+	fmt.Scanln(&userPassword)
+
+	fmt.Println("\nSucces! We added your password, write your age:")
+	_, err := fmt.Scanln(&userAge)
 
 	if err != nil {
-		fmt.Println("Incorrect input")
+		fmt.Println("\nIncorrect age input")
 		return
 	}
 
-	if age < 16 {
-		fmt.Println("\nAccess denied")
-	} else if age == 16 || age == 17 {
-		fmt.Println("\nLimited access")
+	if userAge < 13 {
+		fmt.Println("\nToo young to play")
 	} else {
-		fmt.Println("\nFull access")
+		fmt.Println("\nWelcome to the game!\n\nusername:", username, "\nPassword: ******\nAge:", userAge)
 	}
 }
