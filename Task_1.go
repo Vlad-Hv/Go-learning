@@ -3,25 +3,31 @@ package main
 import "fmt"
 
 func main() {
-	var countOfDay int
 
-	fmt.Print("Choose 1-7 day to know: Is it -day or -end: ")
-	_, err := fmt.Scanln(&countOfDay)
+	var age int
+
+	fmt.Print("Write your age: ")
+	_, err := fmt.Scanln(&age)
 
 	if err != nil {
-		fmt.Println("Incorrect input")
+		fmt.Println("Your input have incorrect type")
 		return
 	}
 
-	switch countOfDay {
+	switch {
 
-	case 1, 2, 3, 4, 5:
-		fmt.Println("\nIt's week day")
+	case age < 13:
+		fmt.Println("\nChild")
 
-	case 6, 7:
-		fmt.Println("\nIt's a weekend")
+	case age < 18:
+		fmt.Println("\nTeenager")
+
+	case age < 60:
+		fmt.Println("\nAdult")
+
 	default:
-		fmt.Println("\nWrite a correct week day count")
+		fmt.Println("\nSenior")
+
 	}
 
 }
