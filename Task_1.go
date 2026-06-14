@@ -3,20 +3,25 @@ package main
 import "fmt"
 
 func main() {
-	var option int
+	var countOfDay int
 
-	fmt.Println("\nChoose the option\n\n1 → Play\n2 → Settings\n3 → Exit\n ")
-	fmt.Scanln(&option)
+	fmt.Print("Choose 1-7 day to know: Is it -day or -end: ")
+	_, err := fmt.Scanln(&countOfDay)
 
-	switch option {
-
-	case 1:
-		fmt.Println("\nHave a good game!\n ")
-
-	case 2:
-		fmt.Println("\nYou are not able to change settings\n ")
-
-	case 3:
-		fmt.Println("\nGood bye!\n ")
+	if err != nil {
+		fmt.Println("Incorrect input")
+		return
 	}
+
+	switch countOfDay {
+
+	case 1, 2, 3, 4, 5:
+		fmt.Println("\nIt's week day")
+
+	case 6, 7:
+		fmt.Println("\nIt's a weekend")
+	default:
+		fmt.Println("\nWrite a correct week day count")
+	}
+
 }
