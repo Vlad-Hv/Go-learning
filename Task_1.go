@@ -3,49 +3,20 @@ package main
 import "fmt"
 
 func main() {
+	var option int
 
-	const adminName = "admin"
-	const adminPassword = "VAD216"
+	fmt.Println("\nChoose the option\n\n1 → Play\n2 → Settings\n3 → Exit\n ")
+	fmt.Scanln(&option)
 
-	var username string
-	var userPassword string
-	var userAge int
+	switch option {
 
-	fmt.Println("Write your username:")
-	fmt.Scanln(&username)
+	case 1:
+		fmt.Println("\nHave a good game!\n ")
 
-	if username == adminName {
-		fmt.Println("Write your admin's password: ")
-		_, err := fmt.Scanln(&userPassword)
+	case 2:
+		fmt.Println("\nYou are not able to change settings\n ")
 
-		if err != nil {
-			fmt.Println("\nIncorrect admin's input\n\nAccess Blocked; Reason: Attack Try")
-			return
-		}
-
-		if userPassword == adminPassword {
-			fmt.Println("\n\nAdmin mode enabled\n ") //Last \n just for terminal appearence(just for me)
-			return
-		} else {
-			fmt.Println("\nIncorrect admin's input\n\nAccess Blocked; Reason: Attack Try")
-			return
-		}
-	}
-
-	fmt.Println("\nSucces! We added your name, write your password:")
-	fmt.Scanln(&userPassword)
-
-	fmt.Println("\nSucces! We added your password, write your age:")
-	_, err := fmt.Scanln(&userAge)
-
-	if err != nil {
-		fmt.Println("\nIncorrect age input")
-		return
-	}
-
-	if userAge < 13 {
-		fmt.Println("\nToo young to play")
-	} else {
-		fmt.Println("\nWelcome to the game!\n\nusername:", username, "\nPassword: ******\nAge:", userAge)
+	case 3:
+		fmt.Println("\nGood bye!\n ")
 	}
 }
