@@ -4,7 +4,13 @@ import "fmt"
 
 func main() {
 
-	for i := 1; i <= 5; i++ {
-		fmt.Println("Current number:", i)
+	var number int
+
+	fmt.Print("Write number: ")
+	fmt.Scanln(&number)
+
+	for i := 1; i <= 10; i++ {
+		answer := number * i
+		fmt.Println(number, "*", i, "=", answer)
 	}
 }
