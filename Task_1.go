@@ -4,13 +4,14 @@ import "fmt"
 
 func main() {
 
-	var number int
+	for i := 1; i <= 20; i++ {
 
-	fmt.Print("Write number: ")
-	fmt.Scanln(&number)
+		if i == 7 {
+			continue
+		} else if i == 15 {
+			break
+		}
 
-	for i := 1; i <= 10; i++ {
-		answer := number * i
-		fmt.Println(number, "*", i, "=", answer)
+		fmt.Println(i)
 	}
 }
