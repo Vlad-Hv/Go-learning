@@ -3,14 +3,19 @@ package main
 import "fmt"
 
 func main() {
-	var DevLanguages [5]string
+	var allNumbers [5]int
+	result := 0
 
-	for i := 0; i < len(DevLanguages); i++ {
-		fmt.Print("\n Write one DevOps Language: ")
-		fmt.Scanln(&DevLanguages[i])
+	for i := 0; i < len(allNumbers); i++ {
+		fmt.Print("\nWrite number: ")
+		fmt.Scanln(&allNumbers[i])
 	}
 
-	for index, value := range DevLanguages {
-		fmt.Println(index+1, value)
+	for _, number := range allNumbers {
+		fmt.Println(result, "+", number, "=", result+number)
+		result += number
+
 	}
+
+	fmt.Print(result)
 }
