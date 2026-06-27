@@ -3,13 +3,14 @@ package main
 import "fmt"
 
 func main() {
-	var massive [5]int
-	for i := 0; i < len(massive); i++ {
-		fmt.Print("\nWhite numer", i+1, ":")
-		fmt.Scanln(&massive[i])
+	var DevLanguages [5]string
+
+	for i := 0; i < len(DevLanguages); i++ {
+		fmt.Print("\n Write one DevOps Language: ")
+		fmt.Scanln(&DevLanguages[i])
 	}
 
-	for _, value := range massive {
-		fmt.Println(value)
+	for index, value := range DevLanguages {
+		fmt.Println(index+1, value)
 	}
 }
