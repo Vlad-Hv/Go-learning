@@ -3,15 +3,13 @@ package main
 import "fmt"
 
 func main() {
+	var massive [5]int
+	for i := 0; i < len(massive); i++ {
+		fmt.Print("\nWhite numer", i+1, ":")
+		fmt.Scanln(&massive[i])
+	}
 
-	for i := 1; i <= 20; i++ {
-
-		if i == 7 {
-			continue
-		} else if i == 15 {
-			break
-		}
-
-		fmt.Println(i)
+	for _, value := range massive {
+		fmt.Println(value)
 	}
 }
