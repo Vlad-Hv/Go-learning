@@ -3,11 +3,14 @@ package main
 import "fmt"
 
 func main() {
-	var sum int = 17
-	var count int = 5
+	var price int = 199
+	var discount int = 15
 
-	integerResult := sum / count
-	floatResult := float64(sum) / float64(count)
+	floatPrice := float64(price)
+	floatDiscount := float64(discount) //I created new variables just to use another type of type conversation
 
-	fmt.Println("Int:", integerResult, "\nFloat:", floatResult)
+	result := floatPrice - ((floatPrice * floatDiscount) / 100)
+
+	fmt.Println("Final price:", result)
+
 }
