@@ -3,14 +3,15 @@ package main
 import "fmt"
 
 func main() {
-	var price int = 199
-	var discount int = 15
+	marks := [5]int{2, 5, 8, 1, 10}
+	var sum int
 
-	floatPrice := float64(price)
-	floatDiscount := float64(discount) //I created new variables just to use another type of type conversation
+	for _, value := range marks {
+		sum += value
+	}
 
-	result := floatPrice - ((floatPrice * floatDiscount) / 100)
+	avarage := float64(sum) / float64(len(marks))
 
-	fmt.Println("Final price:", result)
+	fmt.Println(sum, avarage)
 
 }
