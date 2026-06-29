@@ -3,31 +3,48 @@ package main
 import "fmt"
 
 func main() {
-	var language string = "Go"
-	StartMessage()
-	userName()
-	userAge()
-	Lang(language)
+	first, second := gettingVariables()
+	userChooise(first, second)
 }
 
-func StartMessage() {
-	fmt.Println("Welcome to Go Functions Practice")
+func gettingVariables() (int, int) {
+	var first int
+	var second int
+	fmt.Print("Write two numbers to calculate it: ")
+	fmt.Scanln(&first, &second)
+
+	return first, second
 }
 
-func userName() {
-	var name string
-	fmt.Println("Write your name ")
-	fmt.Scanln(&name)
-	fmt.Println("\nName:", name)
+func plus(first int, second int) int {
+	return first + second
 }
 
-func userAge() {
-	var age int
-	fmt.Println("How old are you")
-	fmt.Scanln(&age)
-	fmt.Println("\nAge:", age)
+func minus(first, second int) int {
+	return first - second
 }
 
-func Lang(lang string) {
-	fmt.Println("Language:", lang)
+func umnoshit(first, second int) int {
+	return first * second
+}
+
+func userChooise(first, second int) {
+	var option int
+	fmt.Println("What you do wanna do with your numbers? '+' - 1, '-' - 2, '*' - 3")
+	fmt.Scanln(&option)
+
+	switch option {
+
+	case 1:
+		fmt.Println(first, "+", second, "=", plus(first, second))
+
+	case 2:
+		fmt.Println(first, "-", second, "=", minus(first, second))
+
+	case 3:
+		fmt.Println(first, "*", second, "=", umnoshit(first, second))
+
+	default:
+		fmt.Println("Incorrect input")
+	}
 }
