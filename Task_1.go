@@ -3,38 +3,83 @@ package main
 import "fmt"
 
 func main() {
-	username, userAge, err := printUserInfo()
+	i := question()
 
-	if err != nil {
+	if i != "y" && i != "n" {
 		return
 	}
 
-	isAdult := isAdult(userAge)
-
-	printInfo(username, userAge, isAdult)
-}
-
-func printUserInfo() (string, int, error) {
-	var username string
-	var userAge int
-
-	fmt.Println("Write your name:")
-	fmt.Scanln(&username)
-	fmt.Println("Well, write your age:")
-	_, err := fmt.Scanln(&userAge)
-
-	return username, userAge, err
-}
-
-func isAdult(userAge int) bool {
-	return userAge >= 18
-}
-
-func printInfo(username string, userAge int, isAdult bool) {
-	fmt.Println("user", username, "is", userAge, "years old")
-	if !isAdult {
-		fmt.Println("Access denied")
-	} else {
-		fmt.Println("Access granted")
+	for i != "n" {
+		option := printMenu()
+		output(option)
+		i = question()
+		if i != "y" && i != "n" {
+			return
+		}
 	}
+
+	fmt.Println("Goodbye!")
+}
+
+func printMenu() int {
+	var option int
+	fmt.Println("======Calculator======\n\n1 - '+'\n2 - '-'\n3 - '*'\n4 - '/'")
+	fmt.Scanln(&option)
+
+	return option
+}
+
+func inputNum() (int, int) {
+	var first int
+	var second int
+
+	fmt.Println("Enter two numbers:")
+	fmt.Scanln(&first, &second)
+
+	return first, second
+}
+
+func plus(first, second int) int {
+	return first + second
+}
+
+func minus(first, second int) int {
+	return first - second
+}
+
+func myltiple(first int, second int) int {
+	return first * second
+}
+
+func dilit(first int, second int) float64 {
+	return float64(first) / float64(second)
+}
+
+func output(option int) {
+	first, second := inputNum()
+	switch option {
+
+	case 1:
+		fmt.Println(first, "+", second, "=", plus(first, second))
+
+	case 2:
+		fmt.Println(first, "-", second, "=", minus(first, second))
+
+	case 3:
+		fmt.Println(first, "*", second, "=", myltiple(first, second))
+
+	case 4:
+		fmt.Println(first, "/", second, "=", dilit(first, second))
+
+	default:
+		fmt.Println("Incorrect enter")
+	}
+}
+
+func question() string {
+	var i string
+	fmt.Println("Do you want to continue? (y/n)")
+	fmt.Scanln(&i)
+
+	return i
 }
