@@ -1,36 +1,36 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 )
 
 func main() {
-	age, err := getAge()
+	first, second, err := getNumbers()
 
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	ageCheker(age)
+	result := diline(first, second)
 
+	fmt.Println(result)
 }
 
-func getAge() (int, error) {
-	var userAge int
-	fmt.Print("Enter your age: ")
-	fmt.Scanln(&userAge)
+func getNumbers() (int, int, error) {
+	var first int
+	var second int
 
-	if userAge < 0 {
-		return 0, errors.New("incorrect age")
+	fmt.Print("Enter two numbers to diline: ")
+	fmt.Scanln(&first, &second)
+
+	if second == 0 {
+		return 0, 0, fmt.Errorf("Incorrect number: %d", second)
 	}
 
-	return userAge, nil
+	return first, second, nil
 }
 
-func ageCheker(age int) {
-	if age >= 0 {
-		fmt.Println("Age accepted")
-	}
+func diline(first, second int) float64 {
+	return float64(first) / float64(second)
 }
