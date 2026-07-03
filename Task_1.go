@@ -6,47 +6,82 @@ import (
 )
 
 func main() {
+	const name string = "Vlad"
+	const age int = 16
+	const password string = "vlad16ag"
 
-	fmt.Println("\nAuthorise please\n ")
-
-	name, err := nameGetter()
-
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	age, err := ageGetter()
+	err := checkAge(name, age)
 
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	fmt.Println("\n\nYour name:", name, "\nYour age:", age)
+	err = checkPassword(password)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println("Welcome, Vlad :)")
 
 }
 
-func nameGetter() (string, error) {
-	var name string
-	fmt.Print("Enter your name: ")
-	fmt.Scanln(&name)
+func checkPassword(password string) error {
+	var userPassword string
 
-	if name == "" {
-		return "", errors.New("variable name is empty")
+	fmt.Print("Enter your password down\n>>> ")
+	fmt.Scanln(&userPassword)
+
+	if len(userPassword) < 8 {
+		return fmt.Errorf("too short password: %d", len(userPassword))
 	}
 
-	return name, nil
+	if userPassword != password {
+		return fmt.Errorf("incorrect password: %q", userPassword)
+	}
+
+	return nil
 }
 
-func ageGetter() (int, error) {
-	var age int
-	fmt.Print("\nWell, Enter your age: ")
-	fmt.Scanln(&age)
+func checkName(name string) error {
 
-	if age < 0 {
-		return 0, fmt.Errorf("Incorrect age: %d", age)
+	var userName string
+	fmt.Print("Enter your Name: ")
+	fmt.Scanln(&userName)
+
+	if userName == "" {
+		return errors.New("the 'name' mustn't be empty")
 	}
 
-	return age, nil
+	if userName != name {
+		return errors.New("wrong name")
+	}
+
+	return nil
+}
+
+func checkAge(name string, age int) error {
+
+	err := checkName(name)
+
+	if err != nil {
+		return fmt.Errorf("cannot validate age, reason: %w", err)
+	}
+
+	var userAge int
+	fmt.Println("Enter your age")
+	fmt.Scanln(&userAge)
+
+	if userAge < 0 {
+		return fmt.Errorf("incorrect age: %d", userAge)
+	}
+
+	if userAge != age {
+		return errors.New("incorrect age input")
+	}
+
+	return nil
+
 }
