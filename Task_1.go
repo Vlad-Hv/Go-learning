@@ -6,115 +6,103 @@ import (
 )
 
 func main() {
-	var balance float64 = 1000
+	first, err := getFirstNumber()
 
-	for {
-		fmt.Println("\n===== Mini Bank =====\n\n ")
-		option, err := menuOption()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	second, err := getSecondNumber()
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	err = options(first, second)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+}
+
+func getFirstNumber() (int, error) {
+	var firstNumber int
+	fmt.Print("\nEnter first number: ")
+	_, err := fmt.Scanln(&firstNumber)
+
+	if err != nil {
+		return 0, errors.New("first number's type must be integer")
+	}
+
+	return firstNumber, nil
+}
+
+func getSecondNumber() (int, error) {
+	var secondNumber int
+	fmt.Print("\nEnter second number: ")
+	_, err := fmt.Scanln(&secondNumber)
+
+	if err != nil {
+		return 0, errors.New("second number's type must be integer")
+	}
+
+	return secondNumber, nil
+}
+
+func plus(first, second int) int {
+	return first + second
+}
+
+func multiple(first, second int) int {
+	return first * second
+}
+
+func minus(first, second int) int {
+	return first - second
+}
+
+func divide(first, second int) (float64, error) {
+	if second == 0 {
+		return 0, fmt.Errorf("second number must't be %d", second)
+	}
+
+	return float64(first) / float64(second), nil
+}
+
+func options(first, second int) error {
+	var option string
+	fmt.Print("Enter operation: ")
+	fmt.Scanln(&option)
+
+	switch {
+
+	case option == "+":
+		plus := plus(first, second)
+		fmt.Println("Result:", plus)
+
+	case option == "-":
+		minus := minus(first, second)
+		fmt.Println("Result:", minus)
+
+	case option == "*":
+		myltiple := multiple(first, second)
+		fmt.Println("Result:", myltiple)
+
+	case option == "/":
+		divide, err := divide(first, second)
 
 		if err != nil {
-			fmt.Println(err)
-			return
+			return fmt.Errorf("cannot calculate because of: %w", err)
 		}
 
-		if option == 4 {
-			break
-		}
+		fmt.Println("Result: ", divide)
 
-		switch option {
-
-		case 1:
-			showBalance(balance)
-
-		case 2:
-			deposit, err := depositMoney(balance)
-
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-
-			balance = deposit
-			success()
-
-		case 3:
-			result, err := withdrawMoney(balance)
-
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-
-			balance = result
-			success()
-
-		default:
-			fmt.Println("\nWrong option, try again")
-			continue
-
-		}
+	default:
+		return fmt.Errorf("incorrrect operetion: %q", option)
 	}
+	return nil
 
-	fmt.Println("\n\nGoodbye :)")
-
-}
-
-func getUserAnswer() (int, error) {
-	var userAnswer int
-	fmt.Print("Your budjet = 1000$\nDo you want to start? (1 - y/n - 2): ")
-	_, err := fmt.Scanln(&userAnswer)
-
-	if err != nil {
-		return 0, errors.New("Incorrect input type")
-	}
-
-	return userAnswer, nil
-}
-
-func menuOption() (int, error) {
-	var option int
-	fmt.Print("\n1. Show balance\n2. Deposit money\n3. Withdraw money\n4. Exit\n\nChoose option: ")
-	_, err := fmt.Scanln(&option)
-
-	if err != nil {
-		return 0, errors.New("entered option must have integer type")
-	}
-
-	return option, nil
-}
-
-func success() {
-	fmt.Println("Balance changed successfully!")
-}
-
-func showBalance(balance float64) {
-	fmt.Println("Current balance:", balance)
-}
-
-func depositMoney(balance float64) (float64, error) {
-	var depSum float64
-	fmt.Print("Enter sum which you wanna deposit: ")
-	fmt.Scanln(&depSum)
-
-	if depSum <= 0 {
-		return 0, fmt.Errorf("incorrect deposit sum: %v", depSum)
-	}
-
-	return depSum + balance, nil
-}
-
-func withdrawMoney(balance float64) (float64, error) {
-	var withdraw float64
-	fmt.Print("\n\nEnte Withdraw sum: ")
-	fmt.Scanln(&withdraw)
-
-	if withdraw <= 0 {
-		return 0, fmt.Errorf("withdraw sum must be positive: %v", withdraw)
-	}
-
-	if withdraw > balance {
-		return 0, errors.New("not enough money")
-	}
-
-	return balance - withdraw, nil
 }
