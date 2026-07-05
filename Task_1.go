@@ -1,35 +1,42 @@
 package main
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 func main() {
-	numbers := getSlice()
-	fmt.Println(getTotal(numbers))
+	numbers := []int{10, 20, 30, 40, 50, 60, 70, 80, 90, 100}
+	fmt.Println(numbers)
+
+	numbers = add(numbers)
+	fmt.Println("New slice:", numbers)
+
+	numbers, err := deleteByIndex(numbers)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println("New slice:", numbers)
 }
 
-func getSlice() []int {
-	var numbers []int
-	for {
-		var number int
-		fmt.Print("\nEnter number to add it: ")
-		_, err := fmt.Scanln(&number)
+func add(slice []int) []int {
+	var number int
+	fmt.Print("Enter number you wanna add: ")
+	fmt.Scanln(&number)
 
-		if err != nil {
-			fmt.Println("you left the adding process")
-			break
-		}
-
-		numbers = append(numbers, number)
-	}
-	return numbers
+	slice = append(slice, number)
+	return slice
 }
 
-func getTotal(numbers []int) int {
-	var total int
-
-	for _, number := range numbers {
-		total += number
+func deleteByIndex(slice []int) ([]int, error) {
+	var index int
+	fmt.Println("Enter position, which you wanna delete")
+	fmt.Scanln(&index)
+	if index > len(slice)-1 || index < 0 {
+		return slice, errors.New("incorrect index")
 	}
 
-	return total
+	slice = append(slice[:index], slice[index+1:]...)
+	return slice, nil
 }
