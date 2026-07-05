@@ -4,14 +4,38 @@ import "fmt"
 
 func main() {
 
-	array := [3]int{1, 2, 3}
-	printNum(array)
+	array := getArray()
+
+	fmt.Print(getSum(array))
 
 }
 
-func printNum(array [3]int) {
+func getSum(array [5]int) int {
 
-	for _, namber := range array {
-		fmt.Print(namber, " ")
+	var total int
+
+	for _, number := range array {
+
+		total += number
+
 	}
+
+	return total
+
+}
+
+func getArray() [5]int {
+
+	var array [5]int
+
+	for i := 0; i < 5; i++ {
+
+		fmt.Print("\nEnter ", i+1, " number: ")
+
+		fmt.Scanln(&array[i])
+
+	}
+
+	return array
+
 }
