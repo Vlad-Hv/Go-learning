@@ -3,13 +3,13 @@ package main
 import "fmt"
 
 func main() {
-	firstArray := [4]int{1, 2, 3, 4}
-	secondArray := change(firstArray)
+	languages := []string{"Golang", "Python", "Java", "Rust"}
+	printLangs(languages)
 
-	fmt.Println(firstArray, "\n", secondArray)
 }
 
-func change(array [4]int) [4]int {
-	array[0] = 999
-	return array
+func printLangs(array []string) {
+	for _, languages := range array {
+		fmt.Print(languages, " ")
+	}
 }
