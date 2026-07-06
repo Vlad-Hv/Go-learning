@@ -6,36 +6,54 @@ import (
 )
 
 func main() {
-	users := map[string]int{
+	userList := map[string]int{
 		"Vlad": 16,
 		"Dima": 20,
 		"Alex": 25,
 	}
-
-	name := getFindingName()
-	age, err := findName(users, name)
+	err := addUser(userList)
 
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println(age)
-}
+	fmt.Println(userList)
 
-func getFindingName() string {
-	var name string
-	fmt.Print("Enter name which you wanna find: ")
-	fmt.Scanln(&name)
+	err = deleteUser(userList)
 
-	return name
-}
-
-func findName(users map[string]int, name string) (int, error) {
-	age, ok := users[name]
-
-	if !ok {
-		return 0, errors.New("there is no users with this name")
+	if err != nil {
+		fmt.Println(err)
+		return
 	}
 
-	return age, nil
+	fmt.Println(userList)
+}
+
+func addUser(users map[string]int) error {
+	var key string
+	var value int
+
+	fmt.Println("Enter name and age:")
+	fmt.Scanln(&key, &value)
+
+	if key == "" || value <= 0 {
+		return errors.New("invalid name or age")
+	}
+
+	users[key] = value
+	return nil
+}
+
+func deleteUser(users map[string]int) error {
+	var nameForDelete string
+	fmt.Println("Enter name to delete:")
+	fmt.Scanln(&nameForDelete)
+
+	_, ok := users[nameForDelete]
+
+	if !ok {
+		return fmt.Errorf("invalid name: %q", nameForDelete)
+	}
+	delete(users, nameForDelete)
+	return nil
 }
