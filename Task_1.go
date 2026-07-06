@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 func main() {
 	users := map[string]int{
@@ -8,11 +11,31 @@ func main() {
 		"Dima": 20,
 		"Alex": 25,
 	}
-	printUserss(users)
+
+	name := getFindingName()
+	age, err := findName(users, name)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(age)
 }
 
-func printUserss(users map[string]int) {
-	for name, age := range users {
-		fmt.Println(name, age)
+func getFindingName() string {
+	var name string
+	fmt.Print("Enter name which you wanna find: ")
+	fmt.Scanln(&name)
+
+	return name
+}
+
+func findName(users map[string]int, name string) (int, error) {
+	age, ok := users[name]
+
+	if !ok {
+		return 0, errors.New("there is no users with this name")
 	}
+
+	return age, nil
 }
