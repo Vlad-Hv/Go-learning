@@ -7,6 +7,7 @@ import (
 )
 
 func main() {
+	var losestrick int
 	playTimes, avarageCost, balance, err := calcAvarGameCost()
 
 	if err != nil {
@@ -29,7 +30,18 @@ func main() {
 			break
 		}
 
-		balance, err = playSlots(stickers, avarageCost, balance)
+		if losestrick >= 5 {
+			losestrick, balance, err = autoWin(stickers, balance, avarageCost, losestrick)
+
+			if err != nil {
+				fmt.Println(err)
+				break
+			}
+
+			continue
+		}
+
+		balance, err, losestrick = playSlots(stickers, avarageCost, balance, losestrick)
 
 		if err != nil {
 			fmt.Println(err)
@@ -121,13 +133,13 @@ func continuePlay() (int, error) {
 	return option, nil
 
 }
-func slotsEasy(stickers map[int]string, avarage float64, balance float64) (float64, error) {
+func slotsEasy(stickers map[int]string, avarage float64, balance float64, losestrick int) (float64, error, int) {
 	var first int
 	var second int
 	var therd int
 
 	if balance < avarage {
-		return balance, fmt.Errorf("\nnot enough money to continue playing, your balance: %f", balance)
+		return balance, fmt.Errorf("\nnot enough money to continue playing, your balance: %f", balance), losestrick
 	}
 
 	first = rand.Intn(2) + 1
@@ -138,21 +150,23 @@ func slotsEasy(stickers map[int]string, avarage float64, balance float64) (float
 
 	if first == second && second == therd {
 		balance += avarage
+		losestrick = 0
 		fmt.Println("You won, your balance", balance)
 	} else {
 		balance -= avarage
+		losestrick += 1
 		fmt.Println("Will luck in the next time, your balance", balance)
 	}
-	return balance, nil
+	return balance, nil, losestrick
 }
 
-func slotsMedium(stickers map[int]string, balance float64, avarage float64) (float64, error) {
+func slotsMedium(stickers map[int]string, balance float64, avarage float64, losestrick int) (float64, error, int) {
 	var first int
 	var second int
 	var therd int
 
 	if balance < avarage {
-		return balance, fmt.Errorf("not enough money to continue play, your balance: %f", balance)
+		return balance, fmt.Errorf("not enough money to continue play, your balance: %f", balance), losestrick
 	}
 	first = rand.Intn(3) + 1
 	second = rand.Intn(3) + 1
@@ -162,22 +176,24 @@ func slotsMedium(stickers map[int]string, balance float64, avarage float64) (flo
 
 	if first == second && second == therd {
 		balance += avarage * 4
+		losestrick = 0
 		fmt.Println("\nYou won! Your balance:", balance)
 	} else {
 		balance -= avarage
+		losestrick += 1
 		fmt.Println("You lost! Will luck in another time")
 	}
 
-	return balance, nil
+	return balance, nil, losestrick
 }
 
-func slotsHard(stickers map[int]string, balance float64, avarage float64) (float64, error) {
+func slotsHard(stickers map[int]string, balance float64, avarage float64, losestrick int) (float64, error, int) {
 	var first int
 	var second int
 	var therd int
 
 	if balance < avarage {
-		return balance, fmt.Errorf("not enough money to continue play, your balance: %f", balance)
+		return balance, fmt.Errorf("not enough money to continue play, your balance: %f", balance), losestrick
 	}
 	first = rand.Intn(5) + 1
 	second = rand.Intn(5) + 1
@@ -187,44 +203,89 @@ func slotsHard(stickers map[int]string, balance float64, avarage float64) (float
 
 	if first == second && second == therd {
 		balance += avarage * 9
+		losestrick = 0
 		fmt.Println("\nYou won! Your balance:", balance)
 	} else {
 		balance -= avarage
+		losestrick += 1
 		fmt.Println("You lost! Will luck in another time")
 	}
 
-	return balance, nil
+	return balance, nil, losestrick
 }
 
-func playSlots(stickers map[int]string, avarage float64, balance float64) (float64, error) {
+func playSlots(stickers map[int]string, avarage float64, balance float64, losestrick int) (float64, error, int) {
 	choice, err := chooseDificulity()
 
 	if err != nil {
-		return 0, err
+		return 0, err, losestrick
 	}
 
 	switch choice {
 	case 1:
-		balance, err = slotsEasy(stickers, avarage, balance)
+		balance, err, losestrick = slotsEasy(stickers, avarage, balance, losestrick)
 
 		if err != nil {
-			return balance, err
+			return balance, err, losestrick
 		}
 
 	case 2:
-		balance, err = slotsMedium(stickers, balance, avarage)
+		balance, err, losestrick = slotsMedium(stickers, balance, avarage, losestrick)
 
 		if err != nil {
-			return balance, err
+			return balance, err, losestrick
 		}
 
 	case 3:
-		balance, err = slotsHard(stickers, balance, avarage)
+		balance, err, losestrick = slotsHard(stickers, balance, avarage, losestrick)
 
 		if err != nil {
-			return balance, err
+			return balance, err, losestrick
 		}
 
 	}
-	return balance, nil
+	return balance, nil, losestrick
+}
+
+/*func losestrick(losestrick int) (int, error) {
+	//losestrick += 1
+
+	if losestrick == 5 {
+		return 0, errors.New("\nlosestrick: Autowin\n ")
+	}
+
+	return losestrick, nil
+}*/
+
+func autoWin(stickers map[int]string, balance float64, avarage float64, losestrick int) (int, float64, error) {
+	autoWinX := autoWinConf()
+	option, err := chooseDificulity()
+
+	if err != nil {
+		return losestrick, balance, err
+	}
+
+	var first int
+	var second int
+	var third int
+
+	first = rand.Intn(5) + 1
+	second = first
+	third = second
+
+	fmt.Println(stickers[first], stickers[second], stickers[third])
+	balance += avarage * float64(autoWinX[option])
+	fmt.Println("\nYou won! Your balance:", balance)
+
+	return 0, balance, nil
+}
+
+func autoWinConf() map[int]int /*error*/ {
+	autoWinX := map[int]int{
+		1: 2,
+		2: 5,
+		3: 10,
+	}
+
+	return autoWinX
 }
