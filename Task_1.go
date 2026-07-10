@@ -14,7 +14,7 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-
+	statistics := Statistics()
 	stickers := stickerMap()
 
 	for /*i := 0; i < playTimes; i++ */ {
@@ -45,26 +45,33 @@ func main() {
 				}
 
 				if losestrick >= 5 {
-					losestrick, balance, err = autoWin(stickers, balance, avarageCost, losestrick)
+					losestrick, balance, err = autoWin(stickers, balance, avarageCost, losestrick, statistics)
 
 					if err != nil {
 						fmt.Println(err)
 						break
 					}
 
+					statistics["Total games"] += 1
+
 					continue
 				}
 
-				balance, err, losestrick = playSlots(stickers, avarageCost, balance, losestrick)
+				balance, err, losestrick = playSlots(stickers, avarageCost, balance, losestrick, statistics)
 
 				if err != nil {
 					fmt.Println(err)
 					return
 				}
+
+				statistics["Total games"] += 1
 			}
 
 		case 2:
 			printBalance(balance)
+
+		case 3:
+			printStatistics(statistics)
 		}
 
 	}
@@ -153,10 +160,13 @@ func continuePlay() (int, error) {
 	return option, nil
 
 }
-func slotsEasy(stickers map[int]string, avarage float64, balance float64, losestrick int) (float64, error, int) {
+func slotsEasy(stickers map[int]string, avarage float64, balance float64, losestrick int, stat map[string]int) (float64, error, int) {
 	var first int
 	var second int
 	var therd int
+
+	//statistics := Statistics()
+	stat["Easy games"] += 1
 
 	if balance < avarage {
 		return balance, fmt.Errorf("\nnot enough money to continue playing, your balance: %.2f", balance), losestrick
@@ -171,20 +181,22 @@ func slotsEasy(stickers map[int]string, avarage float64, balance float64, losest
 	if first == second && second == therd {
 		balance += avarage
 		losestrick = 0
+		stat["Wins"] += 1
 		fmt.Println("You won, your balance", balance)
 	} else {
 		balance -= avarage
 		losestrick += 1
+		stat["Losses"] += 1
 		fmt.Println("Will luck in the next time, your balance", balance)
 	}
 	return balance, nil, losestrick
 }
 
-func slotsMedium(stickers map[int]string, balance float64, avarage float64, losestrick int) (float64, error, int) {
+func slotsMedium(stickers map[int]string, balance float64, avarage float64, losestrick int, stat map[string]int) (float64, error, int) {
 	var first int
 	var second int
 	var therd int
-
+	//statistics := Statistics()
 	if balance < avarage {
 		return balance, fmt.Errorf("not enough money to continue play, your balance: %.2f", balance), losestrick
 	}
@@ -194,24 +206,28 @@ func slotsMedium(stickers map[int]string, balance float64, avarage float64, lose
 
 	fmt.Println(stickers[first], stickers[second], stickers[therd])
 
+	stat["Hard games"] += 1
+
 	if first == second && second == therd {
 		balance += avarage * 4
 		losestrick = 0
+		stat["Wins"] += 1
 		fmt.Println("\nYou won! Your balance:", balance)
 	} else {
 		balance -= avarage
 		losestrick += 1
+		stat["Losses"] += 1
 		fmt.Println("You lost! Will luck in another time")
 	}
 
 	return balance, nil, losestrick
 }
 
-func slotsHard(stickers map[int]string, balance float64, avarage float64, losestrick int) (float64, error, int) {
+func slotsHard(stickers map[int]string, balance float64, avarage float64, losestrick int, stat map[string]int) (float64, error, int) {
 	var first int
 	var second int
 	var therd int
-
+	//statistics := Statistics()
 	if balance < avarage {
 		return balance, fmt.Errorf("not enough money to continue play, your balance: %.2f", balance), losestrick
 	}
@@ -221,20 +237,24 @@ func slotsHard(stickers map[int]string, balance float64, avarage float64, losest
 
 	fmt.Println(stickers[first], stickers[second], stickers[therd])
 
+	stat["MaxWin games"] += 1
+
 	if first == second && second == therd {
 		balance += avarage * 9
 		losestrick = 0
+		stat["Wins"] += 1
 		fmt.Println("\nYou won! Your balance:", balance)
 	} else {
 		balance -= avarage
 		losestrick += 1
+		stat["Losses"] += 1
 		fmt.Println("You lost! Will luck in another time")
 	}
 
 	return balance, nil, losestrick
 }
 
-func playSlots(stickers map[int]string, avarage float64, balance float64, losestrick int) (float64, error, int) {
+func playSlots(stickers map[int]string, avarage float64, balance float64, losestrick int, statistics map[string]int) (float64, error, int) {
 	choice, err := chooseDificulity()
 
 	if err != nil {
@@ -243,21 +263,21 @@ func playSlots(stickers map[int]string, avarage float64, balance float64, losest
 
 	switch choice {
 	case 1:
-		balance, err, losestrick = slotsEasy(stickers, avarage, balance, losestrick)
+		balance, err, losestrick = slotsEasy(stickers, avarage, balance, losestrick, statistics)
 
 		if err != nil {
 			return balance, err, losestrick
 		}
 
 	case 2:
-		balance, err, losestrick = slotsMedium(stickers, balance, avarage, losestrick)
+		balance, err, losestrick = slotsMedium(stickers, balance, avarage, losestrick, statistics)
 
 		if err != nil {
 			return balance, err, losestrick
 		}
 
 	case 3:
-		balance, err, losestrick = slotsHard(stickers, balance, avarage, losestrick)
+		balance, err, losestrick = slotsHard(stickers, balance, avarage, losestrick, statistics)
 
 		if err != nil {
 			return balance, err, losestrick
@@ -277,9 +297,10 @@ func playSlots(stickers map[int]string, avarage float64, balance float64, losest
 	return losestrick, nil
 }*/
 
-func autoWin(stickers map[int]string, balance float64, avarage float64, losestrick int) (int, float64, error) {
+func autoWin(stickers map[int]string, balance float64, avarage float64, losestrick int, stat map[string]int) (int, float64, error) {
 	autoWinX := autoWinConf()
 	option, err := chooseDificulity()
+	//statistics := Statistics()
 
 	if err != nil {
 		return losestrick, balance, err
@@ -294,8 +315,10 @@ func autoWin(stickers map[int]string, balance float64, avarage float64, losestri
 	third = second
 
 	fmt.Println(stickers[first], stickers[second], stickers[third])
-	balance += avarage * float64(autoWinX[option])
+	balance = (balance - avarage) + avarage*float64(autoWinX[option])
 	fmt.Println("\nYou won! Your balance:", balance)
+
+	stat["Bonus wins"] += 1
 
 	return 0, balance, nil
 }
@@ -328,4 +351,22 @@ func printMenuAndGetOption() (int, error) {
 
 func printBalance(balance float64) {
 	fmt.Printf("Your balance: %.2f $", balance)
+}
+
+func Statistics() map[string]int {
+	stats := map[string]int{
+		"Wins":         0,
+		"Losses":       0,
+		"Bonus wins":   0,
+		"Easy games":   0,
+		"Hard games":   0,
+		"MaxWin games": 0,
+		"Total games":  0,
+	}
+
+	return stats
+}
+
+func printStatistics(stat map[string]int) {
+	fmt.Println(stat)
 }
