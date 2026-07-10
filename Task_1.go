@@ -8,7 +8,7 @@ import (
 
 func main() {
 	var losestrick int
-	playTimes, avarageCost, balance, err := calcAvarGameCost()
+	/*playTimes,*/ avarageCost, balance, err := calcAvarGameCost()
 
 	if err != nil {
 		fmt.Println(err)
@@ -17,40 +17,59 @@ func main() {
 
 	stickers := stickerMap()
 
-	for i := 0; i < playTimes; i++ {
-
-		option, err := continuePlay()
+	for /*i := 0; i < playTimes; i++ */ {
+		option, err := printMenuAndGetOption()
 
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 
-		if option == 2 {
+		if option == 5 {
 			break
 		}
 
-		if losestrick >= 5 {
-			losestrick, balance, err = autoWin(stickers, balance, avarageCost, losestrick)
+		switch option {
 
-			if err != nil {
-				fmt.Println(err)
-				break
+		case 1:
+			for {
+				option, err = continuePlay()
+
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+
+				if option == 2 {
+					break
+				}
+
+				if losestrick >= 5 {
+					losestrick, balance, err = autoWin(stickers, balance, avarageCost, losestrick)
+
+					if err != nil {
+						fmt.Println(err)
+						break
+					}
+
+					continue
+				}
+
+				balance, err, losestrick = playSlots(stickers, avarageCost, balance, losestrick)
+
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
 			}
 
-			continue
-		}
-
-		balance, err, losestrick = playSlots(stickers, avarageCost, balance, losestrick)
-
-		if err != nil {
-			fmt.Println(err)
-			return
+		case 2:
+			printBalance(balance)
 		}
 
 	}
 
-	fmt.Println("Good Bye!")
+	fmt.Println("Good Bye!\nSee you later!\nYou get", balance)
 
 }
 
@@ -62,13 +81,14 @@ func printStartMessage() (float64, int, error) {
 	_, err := fmt.Scanln(&balance)
 	fmt.Print("\nEnter number of games: ")
 	_, err2 := fmt.Scanln(&playTimes)
+	fmt.Println("\n(if you will still have money after the ending of this number, then you will be able to continue)")
 
 	switch {
 	case err != nil || err2 != nil:
 		return 0, 0, errors.New("incorrect input type")
 
 	case balance <= 0:
-		return 0, 0, errors.New("balance cannot be zero")
+		return 0, 0, errors.New("balance cannot be less then 1")
 
 	case playTimes <= 0:
 		return 0, 0, errors.New("0 times to play")
@@ -76,16 +96,16 @@ func printStartMessage() (float64, int, error) {
 	return balance, playTimes, nil
 }
 
-func calcAvarGameCost() (int, float64, float64, error) {
+func calcAvarGameCost() ( /*int*/ float64, float64, error) {
 	balance, playTimes, err := printStartMessage()
 
 	if err != nil {
-		return 0, 0, 0, fmt.Errorf("cannot working: %w", err)
+		return /*0*/ 0, 0, fmt.Errorf("cannot working: %w", err)
 	}
 
 	fmt.Println("\nAvarage game will cost:", balance/float64(playTimes))
 
-	return playTimes, balance / float64(playTimes), balance, nil
+	return /*playTimes, */ balance / float64(playTimes), balance, nil
 }
 
 func chooseDificulity() (int, error) {
@@ -139,7 +159,7 @@ func slotsEasy(stickers map[int]string, avarage float64, balance float64, losest
 	var therd int
 
 	if balance < avarage {
-		return balance, fmt.Errorf("\nnot enough money to continue playing, your balance: %f", balance), losestrick
+		return balance, fmt.Errorf("\nnot enough money to continue playing, your balance: %.2f", balance), losestrick
 	}
 
 	first = rand.Intn(2) + 1
@@ -166,7 +186,7 @@ func slotsMedium(stickers map[int]string, balance float64, avarage float64, lose
 	var therd int
 
 	if balance < avarage {
-		return balance, fmt.Errorf("not enough money to continue play, your balance: %f", balance), losestrick
+		return balance, fmt.Errorf("not enough money to continue play, your balance: %.2f", balance), losestrick
 	}
 	first = rand.Intn(3) + 1
 	second = rand.Intn(3) + 1
@@ -193,7 +213,7 @@ func slotsHard(stickers map[int]string, balance float64, avarage float64, losest
 	var therd int
 
 	if balance < avarage {
-		return balance, fmt.Errorf("not enough money to continue play, your balance: %f", balance), losestrick
+		return balance, fmt.Errorf("not enough money to continue play, your balance: %.2f", balance), losestrick
 	}
 	first = rand.Intn(5) + 1
 	second = rand.Intn(5) + 1
@@ -288,4 +308,24 @@ func autoWinConf() map[int]int /*error*/ {
 	}
 
 	return autoWinX
+}
+
+func printMenuAndGetOption() (int, error) {
+	var option int
+	fmt.Println("\n\n===== CASINO VLADIKA =====\n1. Play slots\n2. Show balance\n3. Show statistics\n4. Show history\n5. Exit\nChoose option:")
+	_, err := fmt.Scanln(&option)
+
+	if err != nil {
+		return 0, errors.New("invalid option type")
+	}
+
+	if option < 1 || option > 5 {
+		return 0, fmt.Errorf("incorrect chose: %d", option)
+	}
+
+	return option, nil
+}
+
+func printBalance(balance float64) {
+	fmt.Printf("Your balance: %.2f $", balance)
 }
