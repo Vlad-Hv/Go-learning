@@ -3,127 +3,228 @@ package main
 import (
 	"errors"
 	"fmt"
+	"math/rand"
 )
 
 func main() {
+	playTimes, avarageCost, balance, err := calcAvarGameCost()
 
-	words := make(map[string]string)
-	var option int
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 
-	for {
-		fmt.Print("===== Vocabulary Dictionary =====\n1. Show all words\n2. Add word\n3. Find translation\n4. Delete word\n5. Exit\nChoose option: ")
-		_, err := fmt.Scanln(&option)
+	stickers := stickerMap()
+
+	for i := 0; i < playTimes; i++ {
+
+		option, err := continuePlay()
 
 		if err != nil {
-			fmt.Println("incorrect input type")
+			fmt.Println(err)
 			return
 		}
 
-		if option == 5 {
+		if option == 2 {
 			break
 		}
 
-		switch option {
-		case 1:
-			showAllWords(words)
-		case 2:
-			err = addWord(words)
+		balance, err = playSlots(stickers, avarageCost, balance)
 
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-
-		case 3:
-			err = printTranslation(words)
-
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-
-		case 4:
-			err = deleteWord(words)
-
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-
-		default:
-			fmt.Println("incorrect option")
-
+		if err != nil {
+			fmt.Println(err)
+			return
 		}
 
 	}
 
-	fmt.Println("ByeBye!")
+	fmt.Println("Good Bye!")
+
 }
 
-func showAllWords(words map[string]string) {
-
-	if len(words) == 0 {
-		fmt.Println("Dictionary is empty")
-		return
-	}
-	for englishWords, russianWords := range words {
-		fmt.Println(englishWords, "-", russianWords)
-	}
-}
-
-func addWord(words map[string]string) error {
-	var engWordKey string
-	var rusWordValue string
-	fmt.Println("Enter new english word with translation down please:")
-	fmt.Scanln(&engWordKey, &rusWordValue)
-
-	_, ok := words[engWordKey]
+func printStartMessage() (float64, int, error) {
+	var balance float64
+	var playTimes int
+	fmt.Println("\n   Welcome to casino Vladika\nHere my dreams is happening :)")
+	fmt.Print("\n\nEnter your starting balance: ")
+	_, err := fmt.Scanln(&balance)
+	fmt.Print("\nEnter number of games: ")
+	_, err2 := fmt.Scanln(&playTimes)
 
 	switch {
-	case engWordKey == "" || rusWordValue == "":
-		return errors.New("invalid key or value")
+	case err != nil || err2 != nil:
+		return 0, 0, errors.New("incorrect input type")
 
-	case ok:
-		return fmt.Errorf("there is translation under this word")
+	case balance <= 0:
+		return 0, 0, errors.New("balance cannot be zero")
 
-	default:
-		words[engWordKey] = rusWordValue
-		fmt.Println("word added successfully")
+	case playTimes <= 0:
+		return 0, 0, errors.New("0 times to play")
 	}
-	return nil
+	return balance, playTimes, nil
 }
 
-func printTranslation(words map[string]string) error {
-	var engWord string
-	fmt.Println("Enter english word you wanna know the the translation")
-	fmt.Scanln(&engWord)
+func calcAvarGameCost() (int, float64, float64, error) {
+	balance, playTimes, err := printStartMessage()
 
-	if engWord == "" {
-		return errors.New("empty key")
+	if err != nil {
+		return 0, 0, 0, fmt.Errorf("cannot working: %w", err)
 	}
 
-	value, ok := words[engWord]
+	fmt.Println("\nAvarage game will cost:", balance/float64(playTimes))
 
-	if !ok {
-		return errors.New("word not found, check did you write it correctly?")
-	}
-
-	fmt.Println(engWord, "means", value)
-	return nil
+	return playTimes, balance / float64(playTimes), balance, nil
 }
 
-func deleteWord(words map[string]string) error {
-	var userWord string
-	fmt.Println("Enter word which you wanna delete:")
-	fmt.Scanln(&userWord)
+func chooseDificulity() (int, error) {
+	var choice int
+	fmt.Println("Choose the dificulity:\n1. Easy x2\n2. Hard x5\n3. MaxWin x10")
+	_, err := fmt.Scanln(&choice)
 
-	_, ok := words[userWord]
-
-	if !ok {
-		return errors.New("word not found")
+	if err != nil {
+		return 0, errors.New("incorrect input type")
 	}
 
-	delete(words, userWord)
-	fmt.Println("\n           word deleted successfully\n ")
-	return nil
+	if choice < 1 || choice > 4 {
+		return 0, errors.New("incorrect choice")
+	}
+
+	return choice, nil
+}
+
+func stickerMap() map[int]string {
+
+	stickers := map[int]string{
+		1: "🍎",
+		2: "🍒",
+		3: "🍑",
+		4: "🍉",
+		5: "🥝",
+	}
+
+	return stickers
+}
+
+func continuePlay() (int, error) {
+	var option int
+	fmt.Println("\n🤑Do you want to continue(y - 1/n - 2)?🤑")
+	_, err := fmt.Scanln(&option)
+
+	if err != nil {
+		return 0, errors.New("invalid type")
+	}
+
+	if option != 1 && option != 2 {
+		return 0, fmt.Errorf("valid input is not: %d", option)
+	}
+
+	return option, nil
+
+}
+func slotsEasy(stickers map[int]string, avarage float64, balance float64) (float64, error) {
+	var first int
+	var second int
+	var therd int
+
+	if balance < avarage {
+		return balance, fmt.Errorf("\nnot enough money to continue playing, your balance: %f", balance)
+	}
+
+	first = rand.Intn(2) + 1
+	second = rand.Intn(2) + 1
+	therd = rand.Intn(2) + 1
+
+	fmt.Println(stickers[first], stickers[second], stickers[therd])
+
+	if first == second && second == therd {
+		balance += avarage
+		fmt.Println("You won, your balance", balance)
+	} else {
+		balance -= avarage
+		fmt.Println("Will luck in the next time, your balance", balance)
+	}
+	return balance, nil
+}
+
+func slotsMedium(stickers map[int]string, balance float64, avarage float64) (float64, error) {
+	var first int
+	var second int
+	var therd int
+
+	if balance < avarage {
+		return balance, fmt.Errorf("not enough money to continue play, your balance: %f", balance)
+	}
+	first = rand.Intn(3) + 1
+	second = rand.Intn(3) + 1
+	therd = rand.Intn(3) + 1
+
+	fmt.Println(stickers[first], stickers[second], stickers[therd])
+
+	if first == second && second == therd {
+		balance += avarage * 4
+		fmt.Println("\nYou won! Your balance:", balance)
+	} else {
+		balance -= avarage
+		fmt.Println("You lost! Will luck in another time")
+	}
+
+	return balance, nil
+}
+
+func slotsHard(stickers map[int]string, balance float64, avarage float64) (float64, error) {
+	var first int
+	var second int
+	var therd int
+
+	if balance < avarage {
+		return balance, fmt.Errorf("not enough money to continue play, your balance: %f", balance)
+	}
+	first = rand.Intn(5) + 1
+	second = rand.Intn(5) + 1
+	therd = rand.Intn(5) + 1
+
+	fmt.Println(stickers[first], stickers[second], stickers[therd])
+
+	if first == second && second == therd {
+		balance += avarage * 9
+		fmt.Println("\nYou won! Your balance:", balance)
+	} else {
+		balance -= avarage
+		fmt.Println("You lost! Will luck in another time")
+	}
+
+	return balance, nil
+}
+
+func playSlots(stickers map[int]string, avarage float64, balance float64) (float64, error) {
+	choice, err := chooseDificulity()
+
+	if err != nil {
+		return 0, err
+	}
+
+	switch choice {
+	case 1:
+		balance, err = slotsEasy(stickers, avarage, balance)
+
+		if err != nil {
+			return balance, err
+		}
+
+	case 2:
+		balance, err = slotsMedium(stickers, balance, avarage)
+
+		if err != nil {
+			return balance, err
+		}
+
+	case 3:
+		balance, err = slotsHard(stickers, balance, avarage)
+
+		if err != nil {
+			return balance, err
+		}
+
+	}
+	return balance, nil
 }
