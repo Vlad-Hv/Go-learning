@@ -55,6 +55,10 @@ func main() {
 
 					statistics["Total games"] += 1
 
+					if len(history) > 10 {
+						history = history[1:]
+					}
+
 					continue
 				}
 
@@ -66,6 +70,10 @@ func main() {
 				}
 
 				statistics["Total games"] += 1
+
+				if len(history) > 10 {
+					history = history[1:]
+				}
 			}
 
 		case 2:
@@ -423,8 +431,8 @@ func printHistory(history []string) {
 	if len(history) <= 0 {
 		fmt.Println("History is empty")
 	} else {
-		for _, result := range history {
-			fmt.Println("\n", result)
+		for index, result := range history {
+			fmt.Println("\n", index, result)
 		}
 	}
 }
