@@ -3,436 +3,266 @@ package main
 import (
 	"errors"
 	"fmt"
-	"math/rand"
 )
 
 func main() {
-	var losestrick int
-	var history []string
-	/*playTimes,*/ avarageCost, balance, err := calcAvarGameCost()
+	productList := productsMap()
+	history := makeSlice()
+	statistic := statistick()
 
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	statistics := Statistics()
-	stickers := stickerMap()
-
-	for /*i := 0; i < playTimes; i++ */ {
-		option, err := printMenuAndGetOption()
+	for {
+		option, err := getOption()
 
 		if err != nil {
 			fmt.Println(err)
-			return
+			statistic["Errors count"] += 1
+			continue
 		}
 
-		if option == 5 {
+		if option == 7 {
+			fmt.Println("\nGoodBye!")
 			break
 		}
 
 		switch option {
-
 		case 1:
-			for {
-				option, err = continuePlay()
-
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
-
-				if option == 2 {
-					break
-				}
-
-				if losestrick >= 5 {
-					losestrick, balance, err, history = autoWin(stickers, balance, avarageCost, losestrick, statistics, history)
-
-					if err != nil {
-						fmt.Println(err)
-						break
-					}
-
-					statistics["Total games"] += 1
-
-					if len(history) > 10 {
-						history = history[1:]
-					}
-
-					continue
-				}
-
-				balance, err, losestrick, history = playSlots(stickers, avarageCost, balance, losestrick, statistics, history)
-
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
-
-				statistics["Total games"] += 1
-
-				if len(history) > 10 {
-					history = history[1:]
-				}
-			}
+			printProducts(productList)
 
 		case 2:
-			printBalance(balance)
+			err, history = addProduct(productList, history, statistic)
+			if err != nil {
+				fmt.Println(err)
+				statistic["Errors count"] += 1
+				continue
+			}
 
 		case 3:
-			printStatistics(statistics)
+			err, history = sellProduct(productList, history, statistic)
+
+			if err != nil {
+				fmt.Println(err)
+				statistic["Errors count"] += 1
+				continue
+			}
 
 		case 4:
+			err, history = restockProduct(productList, history, statistic)
+
+			if err != nil {
+				fmt.Println(err)
+				statistic["Errors count"] += 1
+				continue
+			}
+
+		case 5:
 			printHistory(history)
+
+		case 6:
+			printStatistic(statistic)
+		default:
+			fmt.Println("Invalid menu option")
+			statistic["Errors count"] += 1
 		}
 
+		if len(history) > 10 {
+			history = history[1:]
+		}
 	}
-
-	fmt.Println("Good Bye!\nSee you later!\nYou get", balance)
 
 }
 
-func printStartMessage() (float64, int, error) {
-	var balance float64
-	var playTimes int
-	fmt.Println("\n   Welcome to casino Vladika\nHere my dreams is happening :)")
-	fmt.Print("\n\nEnter your starting balance: ")
-	_, err := fmt.Scanln(&balance)
-	fmt.Print("\nEnter number of games: ")
-	_, err2 := fmt.Scanln(&playTimes)
-	fmt.Println("\n(if you will still have money after the ending of this number, then you will be able to continue)")
-
-	switch {
-	case err != nil || err2 != nil:
-		return 0, 0, errors.New("incorrect input type")
-
-	case balance <= 0:
-		return 0, 0, errors.New("balance cannot be less then 1")
-
-	case playTimes <= 0:
-		return 0, 0, errors.New("0 times to play")
-	}
-	return balance, playTimes, nil
+func productsMap() map[string]int {
+	productList := make(map[string]int)
+	return productList
 }
 
-func calcAvarGameCost() ( /*int*/ float64, float64, error) {
-	balance, playTimes, err := printStartMessage()
-
-	if err != nil {
-		return /*0*/ 0, 0, fmt.Errorf("cannot working: %w", err)
-	}
-
-	fmt.Println("\nAvarage game will cost:", balance/float64(playTimes))
-
-	return /*playTimes, */ balance / float64(playTimes), balance, nil
-}
-
-func chooseDificulity() (int, error) {
-	var choice int
-	fmt.Println("Choose the dificulity:\n1. Easy x2\n2. Hard x5\n3. MaxWin x10")
-	_, err := fmt.Scanln(&choice)
-
-	if err != nil {
-		return 0, errors.New("incorrect input type")
-	}
-
-	if choice < 1 || choice > 4 {
-		return 0, errors.New("incorrect choice")
-	}
-
-	return choice, nil
-}
-
-func stickerMap() map[int]string {
-
-	stickers := map[int]string{
-		1: "🍎",
-		2: "🍒",
-		3: "🍑",
-		4: "🍉",
-		5: "🥝",
-	}
-
-	return stickers
-}
-
-func continuePlay() (int, error) {
+func getOption() (int, error) {
 	var option int
-	fmt.Println("\n🤑Do you want to continue(y - 1/n - 2)?🤑")
-	_, err := fmt.Scanln(&option)
-
-	if err != nil {
-		return 0, errors.New("invalid type")
-	}
-
-	if option != 1 && option != 2 {
-		return 0, fmt.Errorf("valid input is not: %d", option)
-	}
-
-	return option, nil
-
-}
-func slotsEasy(stickers map[int]string, avarage float64, balance float64, losestrick int, stat map[string]int, history []string) (float64, error, int, []string) {
-	var first int
-	var second int
-	var therd int
-
-	//statistics := Statistics()
-	stat["Easy games"] += 1
-
-	if balance < avarage {
-		return balance, fmt.Errorf("\nnot enough money to continue playing, your balance: %.2f", balance), losestrick, history
-	}
-
-	first = rand.Intn(2) + 1
-	second = rand.Intn(2) + 1
-	therd = rand.Intn(2) + 1
-
-	fmt.Println(stickers[first], stickers[second], stickers[therd])
-
-	balanceFirst := balance
-
-	if first == second && second == therd {
-		balance += avarage
-		losestrick = 0
-		stat["Wins"] += 1
-		message := fmt.Sprintf("Easy: win +%.2f", balance-balanceFirst)
-		history = append(history, message)
-		fmt.Println("You won, your balance", balance)
-	} else {
-		balance -= avarage
-		message := fmt.Sprintf("Easy: lose -%.2f", balanceFirst-balance)
-		history = append(history, message)
-		losestrick += 1
-		stat["Losses"] += 1
-		fmt.Println("Will luck in the next time, your balance", balance)
-	}
-	return balance, nil, losestrick, history
-}
-
-func slotsMedium(stickers map[int]string, balance float64, avarage float64, losestrick int, stat map[string]int, history []string) (float64, error, int, []string) {
-	var first int
-	var second int
-	var therd int
-	//statistics := Statistics()
-	if balance < avarage {
-		return balance, fmt.Errorf("not enough money to continue play, your balance: %.2f", balance), losestrick, history
-	}
-	first = rand.Intn(3) + 1
-	second = rand.Intn(3) + 1
-	therd = rand.Intn(3) + 1
-
-	fmt.Println(stickers[first], stickers[second], stickers[therd])
-
-	stat["Hard games"] += 1
-	balanceFirst := balance
-
-	if first == second && second == therd {
-		balance += avarage * 4
-		losestrick = 0
-		message := fmt.Sprintf("Hard: win +%.2f", balance-balanceFirst)
-		history = append(history, message)
-		stat["Wins"] += 1
-		fmt.Println("\nYou won! Your balance:", balance)
-	} else {
-		balance -= avarage
-		losestrick += 1
-		message := fmt.Sprintf("Hard: lose -%.2f", balanceFirst-balance)
-		history = append(history, message)
-		stat["Losses"] += 1
-		fmt.Println("You lost! Will luck in another time", balance)
-	}
-
-	return balance, nil, losestrick, history
-}
-
-func slotsHard(stickers map[int]string, balance float64, avarage float64, losestrick int, stat map[string]int, history []string) (float64, error, int, []string) {
-	var first int
-	var second int
-	var therd int
-	//statistics := Statistics()
-	if balance < avarage {
-		return balance, fmt.Errorf("not enough money to continue play, your balance: %.2f", balance), losestrick, history
-	}
-	first = rand.Intn(5) + 1
-	second = rand.Intn(5) + 1
-	therd = rand.Intn(5) + 1
-
-	fmt.Println(stickers[first], stickers[second], stickers[therd])
-
-	stat["MaxWin games"] += 1
-	balanceFirst := balance
-
-	if first == second && second == therd {
-		balance += avarage * 9
-		losestrick = 0
-		message := fmt.Sprintf("MaxWin: win +%.2f", balance-balanceFirst)
-		history = append(history, message)
-		stat["Wins"] += 1
-		fmt.Println("\nYou won! Your balance:", balance)
-	} else {
-		balance -= avarage
-		message := fmt.Sprintf("MaxWin: lose -%.2f", balanceFirst-balance)
-		history = append(history, message)
-		losestrick += 1
-		stat["Losses"] += 1
-		fmt.Println("You lost! Will luck in another time", balance)
-	}
-
-	return balance, nil, losestrick, history
-}
-
-func playSlots(stickers map[int]string, avarage float64, balance float64, losestrick int, statistics map[string]int, history []string) (float64, error, int, []string) {
-	choice, err := chooseDificulity()
-
-	if err != nil {
-		return 0, err, losestrick, history
-	}
-
-	switch choice {
-	case 1:
-		balance, err, losestrick, history = slotsEasy(stickers, avarage, balance, losestrick, statistics, history)
-
-		if err != nil {
-			return balance, err, losestrick, history
-		}
-
-	case 2:
-		balance, err, losestrick, history = slotsMedium(stickers, balance, avarage, losestrick, statistics, history)
-
-		if err != nil {
-			return balance, err, losestrick, history
-		}
-
-	case 3:
-		balance, err, losestrick, history = slotsHard(stickers, balance, avarage, losestrick, statistics, history)
-
-		if err != nil {
-			return balance, err, losestrick, history
-		}
-
-	}
-	return balance, nil, losestrick, history
-}
-
-/*func losestrick(losestrick int) (int, error) {
-	//losestrick += 1
-
-	if losestrick == 5 {
-		return 0, errors.New("\nlosestrick: Autowin\n ")
-	}
-
-	return losestrick, nil
-}*/
-
-func autoWin(stickers map[int]string, balance float64, avarage float64, losestrick int, stat map[string]int, history []string) (int, float64, error, []string) {
-	autoWinX := autoWinConf()
-	option, err := chooseDificulity()
-	//statistics := Statistics()
-	//historyHelp := historyHelp()
-	balanceFirst := balance
-	if err != nil {
-		return losestrick, balance, err, history
-	}
-
-	var first int
-	var second int
-	var third int
-
-	first = rand.Intn(5) + 1
-	second = first
-	third = second
-
-	fmt.Println(stickers[first], stickers[second], stickers[third])
-	balance = (balance - avarage) + avarage*float64(autoWinX[option])
-	fmt.Println("\nYou won! Your balance:", balance)
-
-	switch option {
-	case 1:
-		message := fmt.Sprintf("Easy: bonus win +%2.f", balance-balanceFirst)
-		history = append(history, message)
-
-	case 2:
-		message := fmt.Sprintf("Hard: bonus win +%2.f", balance-balanceFirst)
-		history = append(history, message)
-
-	case 3:
-		message := fmt.Sprintf("MaxWin: bonus win +%2.f", balance-balanceFirst)
-		history = append(history, message)
-	}
-	//message := fmt.Sprintf(historyHelp[option], "%d: bonus win + %2.f", balance-balanceFirst)
-
-	stat["Bonus wins"] += 1
-
-	return 0, balance, nil, history
-}
-
-func autoWinConf() map[int]int /*error*/ {
-	autoWinX := map[int]int{
-		1: 2,
-		2: 5,
-		3: 10,
-	}
-
-	return autoWinX
-}
-
-func printMenuAndGetOption() (int, error) {
-	var option int
-	fmt.Println("\n\n===== CASINO VLADIKA =====\n1. Play slots\n2. Show balance\n3. Show statistics\n4. Show history\n5. Exit\nChoose option:")
+	fmt.Print("===== Warehouse Manager =====\n1. Show products\n2. Add product\n3. Sell product\n4. Restock product\n5. Show operation history\n6. Show statistics\n7. Exit\nChoose option: ")
 	_, err := fmt.Scanln(&option)
 
 	if err != nil {
 		return 0, errors.New("invalid option type")
 	}
 
-	if option < 1 || option > 5 {
-		return 0, fmt.Errorf("incorrect chose: %d", option)
-	}
-
 	return option, nil
 }
 
-func printBalance(balance float64) {
-	fmt.Printf("Your balance: %.2f $", balance)
+func printProducts(prodList map[string]int) {
+	if len(prodList) > 0 {
+		fmt.Println("\n\n===== Products =====")
+		for productName, amount := range prodList {
+			fmt.Println(productName, ": ", amount)
+		}
+		fmt.Println("")
+
+	} else {
+		fmt.Println("\nWarehouse is empty")
+	}
 }
 
-func Statistics() map[string]int {
-	stats := map[string]int{
-		"Wins":         0,
-		"Losses":       0,
-		"Bonus wins":   0,
-		"Easy games":   0,
-		"Hard games":   0,
-		"MaxWin games": 0,
-		"Total games":  0,
+func addProduct(prodList map[string]int, history []string, stat map[string]int) (error, []string) {
+	var productName string
+	var quantity int
+
+	fmt.Print("Enter product name: ")
+	fmt.Scanln(&productName)
+	fmt.Print("Enter quantity: ")
+	_, err := fmt.Scanln(&quantity)
+
+	if err != nil {
+		return errors.New("invalid quantity type"), history
 	}
 
-	return stats
+	if productName == "" {
+		return errors.New("name must not be empty"), history
+	}
+
+	if quantity <= 0 {
+		return fmt.Errorf("quantity cannot be less than zero or zero as your input %d", quantity), history
+	}
+
+	_, ok := prodList[productName]
+
+	if ok == true {
+		return errors.New("Product already exists"), history
+	}
+
+	prodList[productName] = quantity
+
+	addMessage := fmt.Sprintf("Added %q: +%d", productName, quantity)
+	history = append(history, addMessage)
+	stat["Products added"] += 1
+
+	return nil, history
 }
 
-/*func historyHelp() map[int]string {
-	historyHelpDificulity := map[int]string{
-		1: "Easy",
-		2: "Hard",
-		3: "MaxWin",
+func sellProduct(prodList map[string]int, history []string, stat map[string]int) (error, []string) {
+	productName, quantity, err := askProductAndQuantity(prodList)
+
+	if err != nil {
+		return err, history
 	}
-	return historyHelpDificulity
+
+	//_, ok := prodList[productName]
+
+	/*if !ok {
+		return errors.New("Product not found")
+	}*/
+
+	if prodList[productName] < quantity {
+		return fmt.Errorf("Not enough %d stock", quantity-prodList[productName]), history
+	}
+
+	prodList[productName] = prodList[productName] - quantity
+
+	if prodList[productName] == 0 {
+		delete(prodList, productName)
+		stat["Products removed"] += 1
+		removeHistoryMessage := fmt.Sprintf("Removed %q after selling all units", productName)
+		history = append(history, removeHistoryMessage)
+	}
+
+	fmt.Println("Product sold successfully")
+
+	sellHistoryMessage := fmt.Sprintf("Sold %q: -%d", productName, quantity)
+	history = append(history, sellHistoryMessage)
+	stat["Products sold"] += 1
+
+	return nil, history
+}
+
+func askProductAndQuantity(prodList map[string]int) (string, int, error) {
+	var productName string
+	var quantity int
+
+	fmt.Print("Enter product name: ")
+	fmt.Scanln(&productName)
+
+	_, ok := prodList[productName]
+
+	if !ok {
+		return "", 0, errors.New("Product not found")
+	}
+	fmt.Print("Enter product quantity: ")
+	_, err := fmt.Scanln(&quantity)
+
+	if err != nil {
+		return "", 0, errors.New("\nincorrect quantity type")
+	}
+
+	if productName == "" {
+		return "", 0, errors.New("\ninput must not be empty")
+	}
+
+	if quantity <= 0 {
+		return "", 0, errors.New("\nInvalid quantity")
+	}
+
+	return productName, quantity, nil
+}
+
+/*func check(err error) {
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 }*/
 
-func printStatistics(stat map[string]int) {
-	for name, statNumber := range stat {
-		fmt.Print("\n", name, ": ", statNumber)
+func restockProduct(prodList map[string]int, history []string, stat map[string]int) (error, []string) {
+	productName, quantity, err := askProductAndQuantity(prodList)
+
+	if err != nil {
+		return fmt.Errorf("cannot restore nothing, reason %w", err), history
 	}
+
+	/*_, ok := prodList[productName]
+
+	if !ok {
+		return errors.New("Product not found")
+	}*/
+
+	prodList[productName] = prodList[productName] + quantity
+	fmt.Println("Product restocked successfully")
+
+	restockHistoryMessage := fmt.Sprintf("Restocked %q +%d", productName, quantity)
+	history = append(history, restockHistoryMessage)
+	stat["Products restocked"] += 1
+	return nil, history
+}
+
+func makeSlice() []string {
+	var slice []string
+	return slice
+}
+
+func statistick() map[string]int {
+	statistic := map[string]int{
+		"Products added":     0,
+		"Products sold":      0,
+		"Products restocked": 0,
+		"Products removed":   0,
+		"Errors count":       0,
+	}
+	return statistic
+}
+
+func printStatistic(stat map[string]int) {
+	fmt.Println("\n===== Statistics =====")
+	for productNames, quantity := range stat {
+		fmt.Println(productNames, ": ", quantity)
+	}
+	fmt.Println("")
 }
 
 func printHistory(history []string) {
-
-	if len(history) <= 0 {
-		fmt.Println("History is empty")
-	} else {
-		for index, result := range history {
-			fmt.Println("\n", index, result)
+	if len(history) > 0 {
+		fmt.Println("\n===== Operation History =====")
+		for _, amount := range history {
+			fmt.Println(": ", amount)
 		}
+		fmt.Println()
+	} else {
+		fmt.Println("History is empty")
 	}
 }
