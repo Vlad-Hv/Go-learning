@@ -1,68 +1,46 @@
 package main
 
-import (
-	"errors"
-	"fmt"
-)
+import "fmt"
 
-type Departament struct {
+type Customer struct {
 	Name  string
-	Floor int
+	Email string
 }
 
-type Employee struct {
-	Name        string
-	Age         int
-	Departament Departament
+type Order struct {
+	ProductName string
+	Price       float64
+	Customer    Customer
 }
 
 func main() {
-	name, age, departmentName, departmentFloor, err := getInfo()
-
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	employee := createEmploe(name, departmentName, age, departmentFloor)
-
-	fmt.Println(employee.Name, employee.Departament.Name)
-}
-
-func getInfo() (string, int, string, int, error) {
-	var name string
-	var age int
-	var depName string
-	var depFloor int
-
-	fmt.Println("Enter employee name and age:")
-	_, err := fmt.Scanln(&name, &age)
-
-	if err != nil {
-		return "", 0, "", 0, errors.New("invalid input type")
-	}
-	if age <= 18 {
-		return "", 0, "", 0, errors.New("too young for work")
-	}
-
-	fmt.Println("Enter your departament name and floor: ")
-	_, err = fmt.Scanln(&depName, &depFloor)
-
-	if err != nil {
-		return "", 0, "", 0, errors.New("invalid input type")
-	}
-
-	return name, age, depName, depFloor, nil
-}
-
-func createEmploe(name, depName string, age, depFloor int) Employee {
-	employee := Employee{
-		Name: name,
-		Age:  age,
-		Departament: Departament{
-			Name:  depName,
-			Floor: depFloor,
+	name, email, prodName, price := getData()
+	order := Order{
+		ProductName: prodName,
+		Price:       price,
+		Customer: Customer{
+			Name:  name,
+			Email: email,
 		},
 	}
-	return employee
+	printOrder(order)
+}
+
+func getData() (string, string, string, float64) {
+	var name string
+	var Email string
+	var ProdName string
+	var Price float64
+
+	fmt.Println("Enter name and email:")
+	fmt.Scanln(&name, &Email)
+	fmt.Println("Enter product name and price:")
+
+	fmt.Scanln(&ProdName, &Price)
+
+	return name, Email, ProdName, Price
+}
+
+func printOrder(order Order) {
+	fmt.Println(order.ProductName, order.Price, order.Customer.Name, order.Customer.Email)
 }
