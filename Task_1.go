@@ -1,65 +1,68 @@
 package main
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
-type Character struct {
-	Name       string
-	Health     int
-	Level      int
-	GoldAmount int
-	IsAlive    bool
+type Departament struct {
+	Name  string
+	Floor int
+}
+
+type Employee struct {
+	Name        string
+	Age         int
+	Departament Departament
 }
 
 func main() {
-	var name string
-	fmt.Println("Enter hero name: ")
-	fmt.Scanln(&name)
+	name, age, departmentName, departmentFloor, err := getInfo()
 
-	startCharacter := Character{
-		Name:       name,
-		Health:     100,
-		GoldAmount: 0,
-		Level:      1,
-		IsAlive:    true,
+	if err != nil {
+		fmt.Println(err)
+		return
 	}
 
-	actions := actionSlice()
+	employee := createEmploe(name, departmentName, age, departmentFloor)
 
-	fmt.Println(startCharacter)
-
-	for i := 0; (len(actions) - 1) > i; i++ {
-
-		switch i {
-		case 0:
-			fmt.Println(actions[i])
-			startCharacter.Health -= 35
-
-		case 1:
-			fmt.Println(actions[i])
-			startCharacter.GoldAmount += 50
-
-		case 2:
-			fmt.Println(actions[i])
-			startCharacter.Level += 1
-
-		case 3:
-			fmt.Println(actions[i])
-			startCharacter.Health -= 70
-		}
-
-		if startCharacter.Health <= 0 {
-			startCharacter.Health = 0
-			startCharacter.IsAlive = false
-			fmt.Print(actions[4], "\n ")
-		}
-
-	}
-
-	fmt.Println(startCharacter)
-
+	fmt.Println(employee.Name, employee.Departament.Name)
 }
 
-func actionSlice() []string {
-	actions := []string{"\nYour hero got 35 damage", "\nYour hero found 50 golds", "\nYour hero level up for 1 level", "\nYour hero got 70 damage", "\nYour hero died"}
-	return actions
+func getInfo() (string, int, string, int, error) {
+	var name string
+	var age int
+	var depName string
+	var depFloor int
+
+	fmt.Println("Enter employee name and age:")
+	_, err := fmt.Scanln(&name, &age)
+
+	if err != nil {
+		return "", 0, "", 0, errors.New("invalid input type")
+	}
+	if age <= 18 {
+		return "", 0, "", 0, errors.New("too young for work")
+	}
+
+	fmt.Println("Enter your departament name and floor: ")
+	_, err = fmt.Scanln(&depName, &depFloor)
+
+	if err != nil {
+		return "", 0, "", 0, errors.New("invalid input type")
+	}
+
+	return name, age, depName, depFloor, nil
+}
+
+func createEmploe(name, depName string, age, depFloor int) Employee {
+	employee := Employee{
+		Name: name,
+		Age:  age,
+		Departament: Departament{
+			Name:  depName,
+			Floor: depFloor,
+		},
+	}
+	return employee
 }
