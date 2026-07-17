@@ -2,45 +2,38 @@ package main
 
 import "fmt"
 
-type Customer struct {
-	Name  string
-	Email string
+type Statistic struct {
+	Wins        int
+	Losses      int
+	GamesPlayed int
 }
 
-type Order struct {
-	ProductName string
-	Price       float64
-	Customer    Customer
+type GameAccount struct {
+	Username  string
+	Level     int
+	Statistic Statistic
 }
 
 func main() {
-	name, email, prodName, price := getData()
-	order := Order{
-		ProductName: prodName,
-		Price:       price,
-		Customer: Customer{
-			Name:  name,
-			Email: email,
-		},
+	statistic := Statistic{
+		Wins:        10,
+		Losses:      5,
+		GamesPlayed: 15,
 	}
-	printOrder(order)
+	gameAccount := GameAccount{
+		Username:  "Vlad",
+		Level:     7,
+		Statistic: statistic,
+	}
+
+	fmt.Println("First version:", gameAccount)
+	gameAccount = changeStatistic(gameAccount)
+	fmt.Println("\nSecond version:", gameAccount)
 }
 
-func getData() (string, string, string, float64) {
-	var name string
-	var Email string
-	var ProdName string
-	var Price float64
+func changeStatistic(account GameAccount) GameAccount {
+	account.Statistic.Wins += 1
+	account.Statistic.GamesPlayed += 1
 
-	fmt.Println("Enter name and email:")
-	fmt.Scanln(&name, &Email)
-	fmt.Println("Enter product name and price:")
-
-	fmt.Scanln(&ProdName, &Price)
-
-	return name, Email, ProdName, Price
-}
-
-func printOrder(order Order) {
-	fmt.Println(order.ProductName, order.Price, order.Customer.Name, order.Customer.Email)
+	return account
 }
