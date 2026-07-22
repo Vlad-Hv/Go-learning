@@ -1,76 +1,65 @@
 package main
 
-import (
-	"errors"
-	"fmt"
-)
+import "fmt"
 
-type Device struct {
-	Name    string
-	Price   float64
-	InStock bool
+type Character struct {
+	Name       string
+	Health     int
+	Level      int
+	GoldAmount int
+	IsAlive    bool
 }
 
 func main() {
-	device := getMap()
+	var name string
+	fmt.Println("Enter hero name: ")
+	fmt.Scanln(&name)
 
-	deviceId, price, err := askUserInfo(device)
-
-	if err != nil {
-		fmt.Println(err)
-		return
+	startCharacter := Character{
+		Name:       name,
+		Health:     100,
+		GoldAmount: 0,
+		Level:      1,
+		IsAlive:    true,
 	}
 
-	deviceF := device[deviceId]
-	deviceF.Price = price
-	deviceF.InStock = false
-	device[deviceId] = deviceF
+	actions := actionSlice()
 
-	fmt.Println(device[deviceId])
+	fmt.Println(startCharacter)
+
+	for i := 0; (len(actions) - 1) > i; i++ {
+
+		switch i {
+		case 0:
+			fmt.Println(actions[i])
+			startCharacter.Health -= 35
+
+		case 1:
+			fmt.Println(actions[i])
+			startCharacter.GoldAmount += 50
+
+		case 2:
+			fmt.Println(actions[i])
+			startCharacter.Level += 1
+
+		case 3:
+			fmt.Println(actions[i])
+			startCharacter.Health -= 70
+		}
+
+		if startCharacter.Health <= 0 {
+			startCharacter.Health = 0
+			startCharacter.IsAlive = false
+			fmt.Print(actions[4], "\n ")
+		}
+
+	}
+
+	fmt.Println(startCharacter)
 
 }
 
-func getMap() map[string]Device {
-	device := map[string]Device{
-		"BNA21": {
-			Name:    "Lenovo",
-			Price:   199.99,
-			InStock: true,
-		},
-
-		"LAR93": {
-			Name:    "MacBoook",
-			Price:   1982.19,
-			InStock: true,
-		},
-
-		"NLE68": {
-			Name:    "Phone",
-			Price:   2984.74,
-			InStock: true,
-		},
-	}
-	return device
-}
-
-func askUserInfo(devices map[string]Device) (string, float64, error) {
-	var deviceId string
-	var price float64
-
-	fmt.Print("Enter device key: ")
-	fmt.Scanln(&deviceId)
-
-	_, ok := devices[deviceId]
-	if !ok {
-		return "", 0, errors.New("incorrect key")
-	}
-
-	fmt.Println("Enter the price: ")
-	_, err := fmt.Scanln(&price)
-	if err != nil {
-		return "", 0, errors.New("invalid price")
-	}
-
-	return deviceId, price, nil
-	/*this message to you kai. I thought, that I'm able no change map herre just like devices[deviseId].Price = price and later just return changed map, but how I understand, I have to change this data in the main func*/
+func actionSlice() []string {
+	actions := []string{"\nYour hero got 35 damage", "\nYour hero found 50 golds", "\nYour hero level up for 1 level", "\nYour hero got 70 damage", "\nYour hero died"}
+	return actions
 }
