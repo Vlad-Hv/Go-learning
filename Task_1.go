@@ -1,59 +1,76 @@
 package main
 
 import (
+	"errors"
 	"fmt"
-	"math/rand"
 )
 
-type Book struct {
-	Title  string
-	Author string
-	Pages  int
-	IsRead bool
+type Device struct {
+	Name    string
+	Price   float64
+	InStock bool
 }
 
 func main() {
-	var readBooks int
-	books := []Book{
-		{
-			Title:  "Brick",
-			Author: "Daniil",
-			Pages:  200,
-			IsRead: false,
-		},
+	device := getMap()
 
-		{
-			Title:  "Death Planet",
-			Author: "NN",
-			Pages:  3234,
-			IsRead: false,
-		},
+	deviceId, price, err := askUserInfo(device)
 
-		{
-			Title:  "45 mind picture",
-			Author: "Daba setre",
-			Pages:  34,
-			IsRead: false,
-		},
-
-		{
-			Title:  "Garry Potter",
-			Author: "Ronald hfhfh",
-			Pages:  316,
-			IsRead: false,
-		},
+	if err != nil {
+		fmt.Println(err)
+		return
 	}
 
-	for _, book := range books {
-		fmt.Println(book.Title)
+	deviceF := device[deviceId]
+	deviceF.Price = price
+	deviceF.InStock = false
+	device[deviceId] = deviceF
+
+	fmt.Println(device[deviceId])
+
+}
+
+func getMap() map[string]Device {
+	device := map[string]Device{
+		"BNA21": {
+			Name:    "Lenovo",
+			Price:   199.99,
+			InStock: true,
+		},
+
+		"LAR93": {
+			Name:    "MacBoook",
+			Price:   1982.19,
+			InStock: true,
+		},
+
+		"NLE68": {
+			Name:    "Phone",
+			Price:   2984.74,
+			InStock: true,
+		},
+	}
+	return device
+}
+
+func askUserInfo(devices map[string]Device) (string, float64, error) {
+	var deviceId string
+	var price float64
+
+	fmt.Print("Enter device key: ")
+	fmt.Scanln(&deviceId)
+
+	_, ok := devices[deviceId]
+	if !ok {
+		return "", 0, errors.New("incorrect key")
 	}
 
-	books[rand.Intn(len(books))].IsRead = true
-
-	for _, book := range books {
-		if book.IsRead == true {
-			readBooks += 1
-		}
+	fmt.Println("Enter the price: ")
+	_, err := fmt.Scanln(&price)
+	if err != nil {
+		return "", 0, errors.New("invalid price")
 	}
-	fmt.Println(readBooks)
+
+	return deviceId, price, nil
+	/*this message to you kai. I thought, that I'm able no change map herre just like devices[deviseId].Price = price and later just return changed map, but how I understand, I have to change this data in the main func*/
 }
