@@ -3,12 +3,13 @@ package main
 import "fmt"
 
 func main() {
-	var balance int = 500
+	var username string = "Vlad"
+	fmt.Println(username)
 
-	changeBalance(&balance)
-	fmt.Println(balance)
+	changeName(&username)
+	fmt.Println(username)
 }
 
-func changeBalance(balance *int) {
-	*balance += 250
+func changeName(username *string) {
+	*username = "Dima"
 }
