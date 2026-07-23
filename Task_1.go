@@ -6,40 +6,33 @@ import (
 )
 
 func main() {
-	var health int = 100
-	var healthPointer *int = &health
+	var balance float64 = 1000.00
 
-	for i := 0; i < 2; i++ {
-
-		err := changeHealth(healthPointer)
-
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-
-		fmt.Println("Health:", health)
-	}
-
-}
-
-func changeHealth(health *int) error {
-	var damage int
-
-	fmt.Println("Enter damage count")
-	_, err := fmt.Scanln(&damage)
+	err := changeBalance(&balance)
 
 	if err != nil {
-		return errors.New("invlid type")
+		fmt.Println(err)
+		return
 	}
 
-	healthCheck := *health
+	fmt.Println("Balance:", balance)
+}
 
-	if (healthCheck - damage) < 0 {
-		return errors.New("too much damage")
+func changeBalance(balance *float64) error {
+	var deposit float64
+
+	fmt.Println("Enter money to deposit: ")
+	_, err := fmt.Scanln(&deposit)
+
+	if err != nil {
+		return errors.New("invalid type")
 	}
 
-	*health -= damage
+	if deposit <= 0 {
+		return errors.New("deposit mustnot be less than 1")
+	}
+
+	*balance += deposit
 
 	return nil
 }
