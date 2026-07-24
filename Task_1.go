@@ -2,44 +2,42 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
 )
 
-type Product struct {
-	Name   string
-	Price  float64
-	Amount int
+type Player struct {
+	Name      string
+	Inventory []string
 }
 
 func main() {
-	product := []Product{
-		{
-			Name:   "Carrot",
-			Price:  679.12,
-			Amount: 10,
-		},
-		{
-			Name:   "Potato",
-			Price:  1299.10,
-			Amount: 3,
-		},
-		{
-			Name:   "Milk",
-			Price:  1300,
-			Amount: 1,
-		},
-	}
-	fmt.Println("Before:", product)
-	for i := 0; i < len(product); i++ {
-		changeProduct(&product[i])
+	item := newItem()
+	var pointer *Player
+	player := Player{
+		Name:      "Vlad",
+		Inventory: []string{"Axe", "Sword"},
 	}
 
-	fmt.Println("After:", product)
+	addItem(pointer, item)
+	pointer = &player
+	addItem(pointer, item)
+
+	fmt.Println(*pointer) //Kai, I did it specially, for fun more, or to fix in my mind, this topick
 
 }
 
-func changeProduct(product *Product) {
-	price := rand.Intn(500) + 100
-	product.Price = float64(price)
-	product.Amount--
+func newItem() string {
+	var item string
+	fmt.Println("Enter item name: ")
+	fmt.Scanln(&item)
+
+	return item
+}
+
+func addItem(player *Player, item string) {
+	if player == nil {
+		fmt.Println("pointer mustnot be empty")
+		return
+	}
+
+	player.Inventory = append(player.Inventory, item)
 }
