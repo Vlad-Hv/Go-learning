@@ -1,38 +1,31 @@
 package main
 
-import (
-	"errors"
-	"fmt"
-)
+import "fmt"
 
-func main() {
-	var balance float64 = 1000.00
-
-	err := changeBalance(&balance)
-
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	fmt.Println("Balance:", balance)
+type Account struct {
+	Username string
+	Level    int
+	Balance  float64
 }
 
-func changeBalance(balance *float64) error {
-	var deposit float64
-
-	fmt.Println("Enter money to deposit: ")
-	_, err := fmt.Scanln(&deposit)
-
-	if err != nil {
-		return errors.New("invalid type")
+func main() {
+	account := Account{
+		Username: "Vlad",
+		Balance:  1000.00,
+		Level:    1,
 	}
+	changeAccount(&account)
+	fmt.Println(account)
 
-	if deposit <= 0 {
-		return errors.New("deposit mustnot be less than 1")
-	}
+}
 
-	*balance += deposit
+func changeAccount(account *Account) {
+	var username string
+	var Balance float64
 
-	return nil
+	fmt.Println("Enter new username and amount money you want add to the original balance: ")
+	fmt.Scanln(&username, &Balance)
+	account.Username = username
+	account.Balance += Balance
+	account.Level++
 }
