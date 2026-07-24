@@ -1,31 +1,45 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math/rand"
+)
 
-type Account struct {
-	Username string
-	Level    int
-	Balance  float64
+type Product struct {
+	Name   string
+	Price  float64
+	Amount int
 }
 
 func main() {
-	account := Account{
-		Username: "Vlad",
-		Balance:  1000.00,
-		Level:    1,
+	product := []Product{
+		{
+			Name:   "Carrot",
+			Price:  679.12,
+			Amount: 10,
+		},
+		{
+			Name:   "Potato",
+			Price:  1299.10,
+			Amount: 3,
+		},
+		{
+			Name:   "Milk",
+			Price:  1300,
+			Amount: 1,
+		},
 	}
-	changeAccount(&account)
-	fmt.Println(account)
+	fmt.Println("Before:", product)
+	for i := 0; i < len(product); i++ {
+		changeProduct(&product[i])
+	}
+
+	fmt.Println("After:", product)
 
 }
 
-func changeAccount(account *Account) {
-	var username string
-	var Balance float64
-
-	fmt.Println("Enter new username and amount money you want add to the original balance: ")
-	fmt.Scanln(&username, &Balance)
-	account.Username = username
-	account.Balance += Balance
-	account.Level++
+func changeProduct(product *Product) {
+	price := rand.Intn(500) + 100
+	product.Price = float64(price)
+	product.Amount--
 }
