@@ -6,168 +6,262 @@ import (
 	"math/rand"
 )
 
-type Gamer struct {
-	Name       string
-	Level      int
-	Role       string
-	AmountGold int
-	DoneEvents []string
+type Device struct {
+	Name  string
+	Model string
 }
 
-type Event struct {
-	ID           int
-	EventName    string
-	Award        int
-	MinimalLevel int
-	IsDone       bool
+type Client struct {
+	Name    string
+	Age     int
+	Device  Device
+	Balance float64
+}
+
+type RepairOrder struct {
+	ID         int
+	ClientInfo Client
+	RepairCost float64
+	IsDone     bool
+	Status     string
 }
 
 func main() {
-	gamers := getGamers()
-	events := getEvents()
-	guildStatistic := []string{}
+	var completedOrders []RepairOrder
+	devices := getDevices()
+	var orders []RepairOrder
+	var id int
+	//var pointerToOrder *RepairOrder
+	clientsInfo, err := getClientInfo(devices)
 
-	for i := 0; i < len(events); i++ {
-		hero, event, err := getUserAnswer(gamers, events)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	orders, err = createRepairOrders(devices, clientsInfo)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	for i := 0; i < len(orders); i++ {
+		id, err = getID(orders)
 
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 
-		eventHelper := events[event]
-		eventHelper.IsDone = true
-		events[event] = eventHelper
+		//orderMap := createMap(orders)
 
-		gamers[hero].AmountGold += events[event].Award
-		gamers[hero].DoneEvents = append(gamers[hero].DoneEvents, events[event].EventName)
-		guildStatistic = append(guildStatistic, events[event].EventName)
-		fmt.Println(gamers[hero])
-	}
+		//order := orderMap[id] //вот тут ордер уже имеет скопированую структуру, а можно пройтись ФОРом и найти нужную нам структуру в ориге и даь уже на нее указатеь
 
-	fmt.Println(guildStatistic)
-}
+		for i := 0; i < len(orders); i++ {
+			if id == orders[i].ID {
+				changeIsDone(&orders[i])
+				err = changeUserBalance(&clientsInfo[i], orders[i])
+				changeStatus(&orders[i])
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
 
-func getGamers() []Gamer {
-	gamers := []Gamer{
-		{
-			Name:       "Hero",
-			Level:      2,
-			Role:       "Damager",
-			AmountGold: 6200,
-			DoneEvents: []string{},
-		},
-
-		{
-			Name:       "Mark",
-			Level:      4,
-			Role:       "Healer",
-			AmountGold: 13990,
-			DoneEvents: []string{},
-		},
-
-		{
-			Name:       "Clara",
-			AmountGold: 680,
-			Level:      1,
-			Role:       "spirit",
-			DoneEvents: []string{},
-		},
-	}
-
-	return gamers
-}
-
-func getEvents() map[int]Event {
-	var FirstID int = rand.Intn(200) + 101
-	var SecondID int = rand.Intn(200) + 101
-	var TherdID int = rand.Intn(200) + 101
-
-	events := map[int]Event{
-		1: {
-			ID:           FirstID,
-			EventName:    "Kill the Dragon",
-			Award:        1990,
-			MinimalLevel: 3,
-			IsDone:       false,
-		},
-
-		2: {
-			ID:           SecondID,
-			EventName:    "Find and save the King",
-			Award:        2100,
-			MinimalLevel: 2,
-			IsDone:       false,
-		},
-
-		3: {
-			ID:           TherdID,
-			EventName:    "Steal wallet",
-			Award:        500,
-			MinimalLevel: 1,
-			IsDone:       false,
-		},
-	}
-
-	return events
-}
-
-func getUserAnswer(gamers []Gamer, events map[int]Event) (int, int, error) {
-	var heroName string
-	var eventNumber int
-	var counter int
-
-	for _, hero := range gamers {
-		fmt.Println("\n", hero.Name)
-	}
-
-	fmt.Print("\nChoose hero name: ")
-	fmt.Scanln(&heroName)
-
-	for i := 0; i < len(gamers); i++ {
-		if gamers[i].Name == heroName {
-			counter++
+				changeCost(&orders[i])
+				history(&completedOrders, orders[i])
+			}
 		}
+		fmt.Println("Completed Succesfully")
+	}
+	fmt.Println(orders)
+	fmt.Println(completedOrders)
+
+}
+
+func getDevices() []Device {
+	devices := []Device{
+		{
+			Name:  "MacBook",
+			Model: "M3 pro",
+		},
+
+		{
+			Name:  "iPhone",
+			Model: "17 pro",
+		},
+
+		{
+			Name:  "Huawei",
+			Model: "A13",
+		},
+
+		{
+			Name:  "Poco",
+			Model: "X3 pro",
+		},
 	}
 
-	if counter == 0 {
-		return 0, 0, errors.New("invalid hero name")
+	return devices
+	/*for i := 0; i < len(devices); i++{
+		var name string
+		fmt.Println("Enter your name: ")
+		fmt.Scanln(&name)
+		client.Name = name
+		client.RepairDevice = devices[i]
+		clientList = append(clientList, client)
 	}
 
-	for number, eventInfo := range events {
-		if !events[number].IsDone {
-			fmt.Println("\n", number, ":", eventInfo)
-		} else {
-			continue
+	return clientList*/
+}
+
+func getClientInfo(devices []Device) ([]Client, error) {
+	var clientInfo []Client
+
+	for i := 0; i < len(devices); i++ {
+		var name string
+		var age int
+		var balance float64
+
+		fmt.Println("\nEnter your name, age and balance: ")
+		_, err := fmt.Scanln(&name, &age, &balance)
+
+		if err != nil {
+			return nil, errors.New("incorrect input")
 		}
-	}
 
-	fmt.Println("\n\nWell, choose event number: ")
-	_, err := fmt.Scanln(&eventNumber)
+		if balance <= 0 {
+			return nil, errors.New("not enough money")
+		}
+
+		client := Client{
+			Name:    name,
+			Age:     age,
+			Device:  devices[i],
+			Balance: balance,
+		}
+
+		clientInfo = append(clientInfo, client)
+	}
+	return clientInfo, nil
+}
+
+func createRepairOrders(devices []Device, clientInfo []Client) ([]RepairOrder, error) {
+	var orders []RepairOrder
+	prices, err := getPrices(devices)
 
 	if err != nil {
-		return 0, 0, fmt.Errorf("event number must be int")
+		return nil, fmt.Errorf("cannot create order, reason:%w", err)
 	}
 
-	if eventNumber < 1 || eventNumber > len(events) {
-		return 0, 0, errors.New("invalid option")
+	for i := 0; i < len(clientInfo); i++ {
+		ID := rand.Intn(500) + 100
+
+		order := RepairOrder{
+			ID:         ID,
+			ClientInfo: clientInfo[i],
+			RepairCost: prices[i],
+			IsDone:     false,
+			Status:     "Pending",
+		}
+
+		orders = append(orders, order)
 	}
 
-	if events[eventNumber].IsDone {
-		return 0, 0, errors.New("this task alredy taken")
+	return orders, nil
+}
+
+func getPrices(devices []Device) ([]float64, error) {
+	var prices []float64
+	var price float64
+	for i := 0; i < len(devices); i++ {
+		fmt.Print("\nEnter repair price to this device ", devices[i], ": ")
+		_, err := fmt.Scanln(&price)
+
+		if err != nil {
+			return nil, errors.New("incorrect price type")
+		}
+
+		prices = append(prices, price)
 	}
-	counter = 0
-	for i := 0; i < len(gamers); i++ {
-		if gamers[i].Name == heroName {
-			counter = i
+	return prices, nil
+}
+
+func getID(orders []RepairOrder) (int, error) {
+	var id int
+	var checker int
+
+	for i := 0; i < len(orders); i++ {
+		if !orders[i].IsDone {
+			fmt.Println("\n", orders[i])
+		}
+	}
+	fmt.Println("\nChoose order ID:")
+	_, err := fmt.Scanln(&id)
+
+	if err != nil {
+		return 0, errors.New("invalid type")
+	}
+
+	for i := 0; i < len(orders); i++ {
+		if orders[i].ID == id {
+			checker++
 		}
 	}
 
-	isEnough := gamers[counter].Level >= events[eventNumber].MinimalLevel
-
-	if !isEnough {
-		return 0, 0, errors.New("level is not high enough")
+	if checker == 0 {
+		return 0, errors.New("incorrect id")
 	}
 
-	return counter, eventNumber, nil
+	return id, nil
+}
+
+/*func createMap(orders []RepairOrder) map[int]RepairOrder {
+	orderMap := make(map[int]RepairOrder)
+
+	for i, order := range orders {
+		orderMap[order.ID] = orders[i]
+	}
+
+	return orderMap
+}*/
+
+//закончил на том, что хочу создать мапу где ключ - айди, значение - структура из слайса заказов, чтобы можно было обращаться к структуре через айди
+//затем пункт 5 и тд
+//твою налево, трабл с айди и указателями, (пункты 4,5)
+//короче, как я понял все пошло по пизде именно в моменте создания мапы айди: нужная структура
+// есть вариант поебаться в этой функции попытавшись передать тот же адресс в структуру, что и в ориг стрктуре или типо такого
+//или просто после выбор айди в мейн передать поинтер именно на совпадающую структуру с той что копия
+
+func changeIsDone(order *RepairOrder) {
+	if order == nil {
+		return
+	}
+
+	order.IsDone = true
+}
+
+func changeUserBalance(client *Client, order RepairOrder) error {
+	client.Balance -= order.RepairCost
+
+	if client.Balance < 0 {
+		return errors.New("not enough money")
+	}
+
+	return nil
+}
+func changeStatus(order *RepairOrder) {
+	if order.IsDone == true {
+		order.Status = "Completed"
+	}
+}
+func changeCost(order *RepairOrder) {
+	if order == nil {
+		return
+	}
+	order.RepairCost = 2000
+	order.ClientInfo.Balance += 2000
+}
+
+func history(history *[]RepairOrder, order RepairOrder) {
+	*history = append(*history, order)
 }
