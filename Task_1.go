@@ -1,60 +1,105 @@
 package main
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
-type Character struct {
-	Name    string
-	Health  int
-	Level   int
-	Gold    int
-	IsAlive bool
+type BankAccount struct {
+	Owner           string
+	Balance         float64
+	IsBlocked       bool
+	OperationsCount int
 }
 
 func main() {
-	var damage int = 51
-	var amount int = 29
-	character := Character{
-		Name:    "Vlad",
-		Health:  100,
-		Level:   5,
-		Gold:    15,
-		IsAlive: true,
+	account := BankAccount{
+		Owner:           "CEO",
+		Balance:         1683.32,
+		IsBlocked:       false,
+		OperationsCount: 291,
 	}
+	amount, err := getAmount()
 
-	character.TakeDamage(damage)
-	character.AddGold(amount)
-	character.LevelUp()
-	IsNotAlive := character.IsDead()
-	fmt.Println(character)
-	fmt.Println("Is it thue, that character died:", IsNotAlive)
-
-}
-
-func (hero *Character) TakeDamage(damage int) {
-	if damage < 0 {
+	if err != nil {
+		fmt.Println(err)
 		return
 	}
-	hero.Health -= damage
-	if hero.Health <= 0 {
-		hero.IsAlive = false
-		hero.Health = 0
+
+	err = account.Deposit(amount)
+
+	if err != nil {
+		fmt.Println(err)
+		return
 	}
-	fmt.Println(*hero)
+
+	account.PrintStatus()
+
+	err = account.Withdraw(amount)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	account.PrintStatus()
+
 }
 
-func (hero *Character) AddGold(amount int) {
+func (account *BankAccount) Deposit(amount float64) error {
+	if amount <= 0 {
+		return errors.New("invalid amount")
+	}
+	if account.Block() != false {
+		return errors.New("account blocked")
+	}
+
+	account.Balance += amount
+	account.OperationsCount++
+	return nil
+}
+
+func (account BankAccount) CanWithdraw(amount float64) error {
 	if amount < 0 {
-		return
+		return errors.New("invalid money amount")
 	}
-	hero.Gold += amount
-	fmt.Println(*hero)
+	if account.Balance < amount {
+		return errors.New("not enough money on the balance")
+	}
+
+	if account.Block() != false {
+		return errors.New("account blocked")
+	}
+	return nil
 }
 
-func (hero *Character) LevelUp() {
-	hero.Level++
-	fmt.Println(*hero)
+func (account BankAccount) Block() bool {
+	return account.IsBlocked
 }
 
-func (hero *Character) IsDead() bool {
-	return hero.Health <= 0 && hero.IsAlive == false
+func (account *BankAccount) Withdraw(amount float64) error {
+	err := account.CanWithdraw(amount)
+
+	if err != nil {
+		return err
+	}
+
+	account.Balance -= amount
+	return nil
+}
+
+func (account *BankAccount) PrintStatus() error {
+	fmt.Println(*account)
+	return nil
+}
+
+func getAmount() (float64, error) {
+	var amount float64
+	fmt.Println("Enter amount of money:")
+	_, err := fmt.Scanln(&amount)
+
+	if err != nil {
+		return 0, errors.New("invalid type")
+	}
+	return amount, nil
 }
