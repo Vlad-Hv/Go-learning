@@ -2,40 +2,59 @@ package main
 
 import "fmt"
 
-type Product struct {
-	Name        string
-	Price       float64
-	Amount      int
-	IsAvailable bool
+type Character struct {
+	Name    string
+	Health  int
+	Level   int
+	Gold    int
+	IsAlive bool
 }
 
 func main() {
-	product := createProduct()
-	product.PrintInfo()
-	fmt.Println("Tatal price:", product.TotalPrice())
-	fmt.Println("Is it in stock:", product.IsInStock()) //Kai, is it good to write like this? or it''s better to initilize variable first and print ..., variableName
-}
-
-func createProduct() Product {
-	return Product{
-		Name:        "IPhone",
-		Price:       1999.99,
-		Amount:      10,
-		IsAvailable: true,
+	var damage int = 51
+	var amount int = 29
+	character := Character{
+		Name:    "Vlad",
+		Health:  100,
+		Level:   5,
+		Gold:    15,
+		IsAlive: true,
 	}
+
+	character.TakeDamage(damage)
+	character.AddGold(amount)
+	character.LevelUp()
+	IsNotAlive := character.IsDead()
+	fmt.Println(character)
+	fmt.Println("Is it thue, that character died:", IsNotAlive)
+
 }
 
-func (product Product) PrintInfo() {
-	fmt.Println("====INFO====")
-	fmt.Println("Name:", product.Name)
-	fmt.Println("Price:", product.Price)
-	fmt.Println("Amount:", product.Amount)
+func (hero *Character) TakeDamage(damage int) {
+	if damage < 0 {
+		return
+	}
+	hero.Health -= damage
+	if hero.Health <= 0 {
+		hero.IsAlive = false
+		hero.Health = 0
+	}
+	fmt.Println(*hero)
 }
 
-func (product Product) TotalPrice() float64 {
-	return product.Price * float64(product.Amount)
+func (hero *Character) AddGold(amount int) {
+	if amount < 0 {
+		return
+	}
+	hero.Gold += amount
+	fmt.Println(*hero)
 }
 
-func (product Product) IsInStock() bool {
-	return product.Amount > 0 && product.IsAvailable == true
+func (hero *Character) LevelUp() {
+	hero.Level++
+	fmt.Println(*hero)
+}
+
+func (hero *Character) IsDead() bool {
+	return hero.Health <= 0 && hero.IsAlive == false
 }
