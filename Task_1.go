@@ -3,200 +3,298 @@ package main
 import (
 	"errors"
 	"fmt"
-	"math/rand"
 )
 
-type Statistic struct {
-	CompleteOrders int
-	CancellOrders  int
-	TotalEarned    float64
+type Battery struct {
+	Charge int
 }
 
-type Courier struct {
-	Name      string
-	Balance   float64
-	Rating    float64
-	IsWorking bool
-	IsBlocked bool
-	Statistic Statistic
+type MusicS struct {
+	Name           string
+	IsTurnedOn     bool
+	IsMusicPlaying bool
+	PlayingMusic   string
+	Battery        Battery
+	Musics         []string
 }
 
 func main() {
-	earned := 1284.23
-	courier := createCourier()
-	err := courier.StartWork()
-	if err != nil {
-		fmt.Println(err)
+	var music int
+
+	station := createMusicStation()
+
+	for {
+		option, err := writeMainMenu()
+
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+
+		if option == 6 {
+			break
+		}
+
+		switch option {
+		case 1:
+			err = station.TurnStationOn()
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+			fmt.Println("Station turned on succesfully")
+
+		case 2:
+			err = station.TurnStationOff()
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+			fmt.Println("Station turned off Sucessfully")
+
+		case 3:
+			err = station.TurnOnMusic(music)
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+			fmt.Println("Music turned on sucesully!\nPlaying music:", station.Musics[music])
+			music, err = station.ModifyMusicMenu(music)
+
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+
+		case 4:
+			err = station.Battery.ChargeBattery()
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+			fmt.Println("Battery charged 10 percents succesfully")
+
+		case 5:
+			station.PrintStatus(music)
+		}
 	}
-
-	err = courier.CompleteOrder(earned)
-
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	err = courier.CompleteOrder(earned)
-
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	err = courier.CompleteOrder(0)
-
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	err = courier.CancellOrder()
-
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	err = courier.Withdraw(291)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	err = courier.Withdraw(291321)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	err = courier.StopWork()
-
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	courier.Block()
-	err = courier.StartWork()
-
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	courier.PrintStatus()
-
-}
-func createCourier() Courier {
-	return Courier{
-		Name:    "Sofia",
-		Balance: 2742.23,
-		Rating:  0,
-	}
-}
-func (statistic *Statistic) AddCompletedOrder(earned float64) {
-	statistic.CompleteOrders++
-	statistic.TotalEarned += earned
-
+	fmt.Println("Good Bye :)")
 }
 
-func (statistic *Statistic) AddCancelledOrder() {
-	statistic.CancellOrders++
+func createMusicStation() MusicS {
+	return MusicS{
+		Name: "JBL 3",
+		Battery: Battery{
+			Charge: 100,
+		},
+		Musics: []string{"Mockingbird  Eminem", "Whight night  Valera Saltykov", "Beat It.  MJ"},
+	}
 }
 
-func (statistic *Statistic) TotalOrders() int {
-	return statistic.CompleteOrders + statistic.CancellOrders
+func (station *MusicS) ModifyMusicMenu(music int) (int, error) {
+	if station == nil {
+		return music, errors.New("station is nil")
+	}
+	for {
+		option, err := writeMusicMenu()
+
+		if err != nil {
+			return music, err
+			//continue
+		}
+
+		if option == 1 {
+			err = station.PauseMusic()
+			if err != nil {
+				//fmt.Println(err)
+				return music, err
+			}
+			fmt.Println("Music paused succesfully")
+			break
+		}
+
+		switch option {
+		case 2:
+			music, err = station.ChangeMusic(music)
+			if err != nil {
+				//fmt.Println(err)
+				//continue
+				return music, err
+			}
+
+		default:
+			fmt.Println("incorrect choose")
+		}
+	}
+
+	return music, nil
 }
 
-func (courier *Courier) StartWork() error {
-	if courier.IsBlocked == true {
-		return errors.New("user blocked")
+func (station *MusicS) TurnStationOn() error {
+	if station == nil {
+		return errors.New("station is nil")
 	}
 
-	if courier.IsWorking == true {
-		return errors.New("courier is already working")
+	if station.IsTurnedOn {
+		return errors.New("is already working")
 	}
 
-	courier.IsWorking = true
+	if station.Battery.Charge < 10 {
+		return errors.New("charge is not enough")
+	}
+
+	station.IsTurnedOn = true
 	return nil
 }
 
-func (courier *Courier) StopWork() error {
-	if courier.IsWorking == false {
-		return errors.New("user is already donnot working")
+func (station *MusicS) TurnStationOff() error {
+	if station == nil {
+		return errors.New("station is nil")
 	}
 
-	courier.IsWorking = false
+	if !station.IsTurnedOn {
+		return errors.New("station already isnot working")
+	}
+
+	if station.IsMusicPlaying == true {
+		station.IsMusicPlaying = false
+	}
+
+	station.IsTurnedOn = false
 	return nil
 }
 
-func (courier *Courier) CompleteOrder(earned float64) error {
-	if courier.IsWorking == false {
-		return errors.New("courier is not working")
+func (battery *Battery) DisChargeStation() error {
+	if battery == nil {
+		return errors.New("station is nil")
 	}
 
-	if courier.IsBlocked == true {
-		return errors.New("courier is blocked")
-	}
-
-	if earned <= 0 {
-		return errors.New("earn must be more than zero")
-	}
-
-	var ratingImprove int = rand.Intn(5) + 1
-
-	courier.Balance += earned
-	courier.Statistic.AddCompletedOrder(earned) // I removed err validating in thid method because we are making the same validating in this method(courier)
-	courier.Rating += float64(ratingImprove)
+	battery.Charge -= 10
 	return nil
 }
 
-func (courier *Courier) CancellOrder() error {
-	if !courier.IsWorking {
-		return errors.New("courier must working")
+func (station *MusicS) TurnOnMusic(music int) error {
+	if station == nil {
+		return errors.New("station is nil")
 	}
 
-	if courier.IsBlocked {
-		return errors.New("courier must not be blocked")
+	if station.IsMusicPlaying {
+		return errors.New("music is already playing")
 	}
 
-	courier.Statistic.AddCancelledOrder()
-	courier.Rating--
+	if !station.IsTurnedOn {
+		return errors.New("turn on the station before")
+	}
+
+	if station.Battery.Charge <= 10 {
+		return errors.New("please, charge your music station")
+	}
+
+	err := station.Battery.DisChargeStation()
+
+	if err != nil {
+		return fmt.Errorf("cannot turn on music:%w", err)
+	}
+	station.IsMusicPlaying = true
+	station.PlayingMusic = station.Musics[music]
 	return nil
 }
 
-func (courier *Courier) Withdraw(amount float64) error {
-	if amount <= 0 {
-		return errors.New("amount must be more than zero")
+func (station *MusicS) ChangeMusic(music int) (int, error) {
+	if station == nil {
+		return music, errors.New("station is nil")
 	}
 
-	if courier.Balance < amount {
-		return errors.New("too big amount")
+	if !station.IsMusicPlaying {
+		return music, errors.New("music isnot playing")
 	}
 
-	if courier.IsBlocked {
-		return errors.New("blocked account cannot withdraw money")
+	if station.Battery.Charge <= 10 {
+		return music, errors.New("please, charge your music station")
 	}
 
-	courier.Balance -= amount
+	err := station.Battery.DisChargeStation()
+
+	if err != nil {
+		return music, fmt.Errorf("cannot change music:%w", err)
+	}
+
+	music++
+	if music == 3 {
+		music = 0
+	}
+
+	station.PlayingMusic = station.Musics[music]
+	return music, nil
+}
+
+func (station *MusicS) PauseMusic() error {
+	if station == nil {
+		return errors.New("station is nil")
+	}
+
+	if !station.IsMusicPlaying {
+		return errors.New("music already isnot working")
+	}
+
+	station.IsMusicPlaying = false
 	return nil
 }
 
-func (courier *Courier) Block() {
-	courier.IsBlocked = true
-	if courier.IsWorking == true {
-		courier.IsWorking = false
+func (battery *Battery) ChargeBattery() error {
+	if battery == nil {
+		return errors.New("batery is nil")
 	}
+
+	if battery.Charge >= 100 {
+		return errors.New("batery must have 100 percent or less")
+	}
+
+	battery.Charge += 10
+	return nil
 }
 
-func (courier *Courier) IsReliable() bool {
-	// I don't know, эти условия должны одновремено выполнятся или нет, так что сделаю обработку обоих вариантов. Кай, не серчай
-	if courier.Rating >= 4 && courier.Statistic.CompleteOrders > courier.Statistic.CancellOrders && !courier.IsBlocked {
-		return true
-	}
-	return false
+func (station *MusicS) PrintStatus(music int) {
+	fmt.Println("Name:", station.Name)
+	fmt.Println("Is turned on:", station.IsTurnedOn)
+	fmt.Println("Is music playing:", station.IsMusicPlaying)
+	fmt.Println("Which music is playing/played last:", station.Musics[music])
+	fmt.Println("Charge percent:", station.Battery.Charge)
 }
 
-func (courier *Courier) PrintStatus() {
-	fmt.Println("Name:", courier.Name)
-	fmt.Println("Balance:", courier.Balance)
-	fmt.Println("Rating:", courier.Rating)
-	fmt.Println("Is working:", courier.IsWorking)
-	fmt.Println("Is Blocked:", courier.IsBlocked)
-	fmt.Println("Completed orders:", courier.Statistic.CompleteOrders)
-	fmt.Println("Cancelled orders:", courier.Statistic.CancellOrders)
-	fmt.Println("Total:", courier.Statistic.TotalEarned)
-	fmt.Println("Is courier reliable:", courier.IsReliable())
+func writeMainMenu() (int, error) {
+	var option int
+
+	fmt.Println("----Main Menu----\n1. Turn on\n2. Turn off\n3. Turn on the music\n4. Charge the battery\n5. Print status\n6. Exit")
+	_, err := fmt.Scanln(&option)
+
+	if err != nil {
+		return 0, errors.New("invalid input")
+	}
+
+	return option, nil
 }
+
+func writeMusicMenu() (int, error) {
+	var option int
+
+	fmt.Println("\n---Music Menu---\n1. Pause\n2. Next music")
+	_, err := fmt.Scanln(&option)
+
+	if err != nil {
+		return 0, errors.New("invalid input")
+	}
+
+	return option, nil
+}
+
+/*
+1 turn on
+2 Turn off
+3 Turn on Music
+4 next music
+5 turn off music
+6 pause musik
+7chargebatery
+8 writeStatus
+*/
