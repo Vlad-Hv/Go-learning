@@ -1370,16 +1370,24 @@ Not allowed:
 
 Completed:
 
-* Week 1 — Go Basics
-* Week 1 Final Project — CLI Student Management System
+- Week 1 — Go Basics
+  - Final Project: CLI Student Management System
+  - Status: Passed
+
+- Week 2 — Functions, Errors, Arrays, Slices, Maps
+  - Final Project: Casino Vladika Go Edition
+  - Score: 8.6/10
+  - Status: Passed
+
+- Week 3 — Structs, Pointers, Methods
+  - Weekly Project: Expedition Base Manager
+  - Score: 8.5/10
+  - Status: Passed
 
 Current:
 
-* Week 2 — Block 1: Functions
+- Week 4 — Packages, Modules, Project Structure
 
 Next:
 
-* Functions tasks
-* Functions mini-project
-* Functions vocabulary
-* Week 2 Errors
+- Block 1 — Modules
