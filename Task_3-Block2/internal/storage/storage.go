@@ -1,14 +1,15 @@
 package storage
 
 import (
-	"task3/internal/delivery"
+	"task3/internal/ticket"
 )
 
-func CreateStorage() []delivery.Delivery {
-	var deliveryStorage []delivery.Delivery
-	return deliveryStorage
+func CreateStorage() []ticket.Ticket {
+	var ticketStorage []ticket.Ticket
+	return ticketStorage
 }
 
-func StorageDeliveries(deliveryStorage *[]delivery.Delivery, order delivery.Delivery) {
-	*deliveryStorage = append(*deliveryStorage, order)
+func AddTicket(timeTicket ticket.Ticket, storage *[]ticket.Ticket) {
+
+	*storage = append(*storage, timeTicket)
 }

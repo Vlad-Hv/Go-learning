@@ -1,91 +1,98 @@
 package main
 
 import (
+	// "github.com/google/uuid"
 	"fmt"
-	"task3/internal/delivery"
 	"task3/internal/id"
 	"task3/internal/storage"
+	"task3/internal/ticket"
 	"task3/internal/ui"
-	"task3/internal/validation"
-	//"github.com/google/uuid"
 )
 
 func main() {
-	deliveryStorage := storage.CreateStorage()
-	numToID := delivery.MakeNumToID(deliveryStorage)
-	idToDelivery := delivery.MakeIdToDelivery(&deliveryStorage)
-
+	ticketStorage := storage.CreateStorage()
 	for {
 		option, err := ui.GetMenuOption()
-		err = validation.ValidateMenu(option, err)
+		err = ui.ValidateUi(option, err)
 		if err != nil {
 			fmt.Println(err)
 			continue
 		}
 
 		if option == 5 {
-			fmt.Println("you left delivery menu")
+			fmt.Println("You left the menu")
 			break
 		}
 
 		switch option {
 		case 1:
-			deliveryName, deliveryWeight, err := ui.GetDeliveryInfo()
-			err = validation.ValidateCreatingDelivery(deliveryName, deliveryWeight, err)
+			ownerName := ui.GetName()
+			err = ui.ValidateName(ownerName)
+
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+			option, lenthOptions, err := ui.GetTicketOption()
+
+			err = ui.ValidateTicketOption(option, lenthOptions, err)
+
 			if err != nil {
 				fmt.Println(err)
 				continue
 			}
 
-			ID := id.GenerateUniqueID(deliveryStorage)
-			order := delivery.CreateDelivery(deliveryName, deliveryWeight, ID)
-			storage.StorageDeliveries(&deliveryStorage, order)
+			ID := id.CreateOriginalID(ticketStorage)
 
-			numToID = delivery.MakeNumToID(deliveryStorage)
-			idToDelivery = delivery.MakeIdToDelivery(&deliveryStorage)
-			fmt.Println("Delivery done successfully")
+			timeTicket := ticket.CreateTicket(ownerName, option, ID)
+			storage.AddTicket(timeTicket, &ticketStorage)
 
 		case 2:
-			err := validation.ValidateDeliveries(deliveryStorage)
-			if err != nil {
-				fmt.Println(err)
-				continue
-			}
-
-			ui.ShowAllDeliveries(deliveryStorage)
+			ui.PrintAllTickets(ticketStorage)
 
 		case 3:
-			option, err := ui.GetID()
-			err = validation.ValidateID(option, err, deliveryStorage)
+			indexToUserMap := ticket.CreateIndexToUser(&ticketStorage)
+			//find by option, validate, make map, make the method to use one visit
+			chosenOption, err := ui.GetChosenTicket()
+			err = ui.ValidateUseOneTicket(chosenOption, len(ticketStorage), err)
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+			user := indexToUserMap[chosenOption]
 
+			err = ticket.ValidateUserVisit(*user)
 			if err != nil {
 				fmt.Println(err)
 				continue
 			}
 
-			delivery := idToDelivery[numToID[option]]
-			ui.PrintDeliveryByID(delivery)
+			err = ticket.ValidatePosibilityToUseTicket(*user)
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+
+			user.UseOneVisit()
 
 		case 4:
-			option, err := ui.GetID()
-			err = validation.ValidateID(option, err, deliveryStorage)
-
+			indexToUserMap := ticket.CreateIndexToUser(&ticketStorage)
+			chosenOption, err := ui.GetChosenTicket()
+			err = ui.ValidateTicketOption(chosenOption, len(ticketStorage), err)
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+			user := indexToUserMap[chosenOption]
+			err = ticket.ValidateTicketStatus(*user)
 			if err != nil {
 				fmt.Println(err)
 				continue
 			}
 
-			order := idToDelivery[numToID[option]]
-			err = validation.ValidatePossibilityMarkShipped(order)
-
-			if err != nil {
-				fmt.Println(err)
-				continue
-			}
-
-			order.MarkAsShipped()
-
+			user.FreezeTicket()
 		}
 
+		//switch case
 	}
 }

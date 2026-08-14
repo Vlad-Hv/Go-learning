@@ -2,45 +2,40 @@ package ui
 
 import (
 	"fmt"
-	"task3/internal/delivery"
+	"task3/internal/ticket"
 )
 
-func GetMenuOption() (int, error) {
-	var option int
-	printMenu()
-	_, err := fmt.Scanln(&option)
-	return option, err
+func GetName() string {
+	var ownerName string
+	askName()
+	fmt.Scanln(&ownerName)
+	return ownerName
 }
 
-func printMenu() {
-	fmt.Println("---Menu---")
-	fmt.Println("1. Create delivery\n2. Show all deliveries\n3. Find delivery by ID\n4. Mark delivery as shipped\n5. Exit")
+func askName() {
+	fmt.Println("Enter your name:")
 }
 
-func ShowAllDeliveries(deliveries []delivery.Delivery) {
-	for index, delivery := range deliveries {
-		fmt.Println("\nDelivery", index+1)
-		fmt.Println("ID:", delivery.ID)
-		fmt.Println("Recipient:", delivery.Recipient)
-		fmt.Println("Weight:", delivery.Weight)
-		fmt.Println("Status:", delivery.Status)
+func askTicketOption() int {
+	ticketOption := ticket.CreateTicketOptions()
+	fmt.Println("The options to buy the ticket:")
+	for option, offer := range ticketOption {
+		fmt.Println(option, ":", offer, "visits")
+		fmt.Println("Choose the order:")
 	}
+	return len(ticketOption)
 }
 
-func GetID() (int, error) {
-	printGetID()
+func GetTicketOption() (int, int, error) {
 	var option int
+	lenthOptions := askTicketOption()
 	_, err := fmt.Scanln(&option)
-	return option - 1, err
+	return option, lenthOptions, err
 }
 
-func printGetID() {
-	fmt.Println("Enter please the delivery number:")
-}
-
-func PrintDeliveryByID(order *delivery.Delivery) {
-	fmt.Println("ID:", order.ID)
-	fmt.Println("Recipient:", order.Recipient)
-	fmt.Println("Weight:", order.Weight)
-	fmt.Println("Status:", order.Status)
+func GetChosenTicket() (int, error) {
+	var chosenTicketNumber int
+	fmt.Println("Enter number of your ticket:")
+	_, err := fmt.Scanln(&chosenTicketNumber)
+	return chosenTicketNumber, err
 }
