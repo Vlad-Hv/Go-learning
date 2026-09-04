@@ -185,6 +185,18 @@ The goal is mastery, not mechanically completing an exact task count.
 
 ---
 
+# Week 5 Learning Process Review
+
+At the start of Week 5:
+
+- conduct a short meta-review with Vlad and decide together what should replace the fixed `3 tasks + mini-project` structure;
+- do not define the new Week 5 practice format in advance;
+- redesign the Professional English workflow around long-term spiral repetition and active explanation of the latest project in English;
+- add a short idiomatic Go naming mini-block, then grade naming and English spelling more strictly;
+- spirally revisit map/reference/copy semantics, especially that passing a map normally does not require `*map`, while a value retrieved from `map[K]Struct` is a copy.
+
+---
+
 # Spiral Practice Rule
 
 New blocks should not practice only the new syntax.
