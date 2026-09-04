@@ -1384,10 +1384,21 @@ Completed:
   - Score: 8.5/10
   - Status: Passed
 
+- Week 4 — Packages, Modules, Project Structure
+  - Modules: Completed
+  - Packages: Completed
+  - Project Structure: Completed
+  - Git Fundamentals: Completed
+  - Debugging Fundamentals: Completed
+  - Weekly Project: Orbital Emergency
+  - Score: 8.3/10
+  - Main revisit points: map semantics, naming/spelling, Professional English retention, package/responsibility boundaries
+  - Status: Passed
+
 Current:
 
-- Week 4 — Packages, Modules, Project Structure
+- Week 5 — Testing and Idiomatic Go
 
 Next:
 
-- Block 1 — Modules
+- Week 5 learning process review
