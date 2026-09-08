@@ -14,8 +14,9 @@ func (s *EventReservationSystem) Booking(name string, amount int) error {
 	err := s.ValidateBooking(name, amount)
 
 	if err != nil {
-		return err
+		return fmt.Errorf("error: %w", err)
 	}
+
 	reserv, ok := s.Reservations[name]
 
 	if !ok {

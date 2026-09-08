@@ -2,13 +2,18 @@ package event
 
 import "errors"
 
+var (
+	ErrInvalidAmount = errors.New("amount must be more than zero")
+)
+
 func (s EventReservationSystem) ValidateBooking(name string, amount int) error {
+
 	if name == "" {
 		return errors.New("name must not be empty")
 	}
 
 	if amount <= 0 {
-		return errors.New("amount must be more than zero")
+		return ErrInvalidAmount
 	}
 
 	if (s.FreePlace - amount) < 0 {

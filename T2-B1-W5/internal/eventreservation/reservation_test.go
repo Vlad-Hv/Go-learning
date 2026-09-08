@@ -1,6 +1,9 @@
 package event
 
-import "testing"
+import (
+	"errors"
+	"testing"
+)
 
 func TestBookingSuccess(t *testing.T) {
 	system := EventReservationSystem{Capacity: 20, FreePlace: 20, Reservations: make(map[string]*Reservation)}
@@ -71,6 +74,10 @@ func TestBookingWithZeroBookingPlaces(t *testing.T) {
 		t.Fatalf("expected an a error")
 	}
 
+	if !errors.Is(err, ErrInvalidAmount) {
+		t.Fatalf("expected amount error, got %v", err)
+	}
+
 	_, ok := system.Reservations["vlad"]
 
 	if ok {
@@ -96,6 +103,10 @@ func TestBookingWithLessThanZeroBookingPlaces(t *testing.T) {
 	err := system.Booking("vlad", -3)
 	if err == nil {
 		t.Fatalf("expected an a error, got %v", err)
+	}
+
+	if !errors.Is(err, ErrInvalidAmount) {
+		t.Fatalf("expected amount error, got %v", err)
 	}
 
 	_, ok := system.Reservations["vlad"]
