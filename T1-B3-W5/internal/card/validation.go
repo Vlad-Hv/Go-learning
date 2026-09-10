@@ -20,7 +20,7 @@ func (c *Card) validatePay(price int) error {
 		return errInvalidPrice
 	}
 
-	if c.Balance < price {
+	if price > c.Balance {
 		return errNotEnoughMoney
 	}
 
