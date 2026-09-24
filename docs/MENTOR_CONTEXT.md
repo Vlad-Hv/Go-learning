@@ -185,16 +185,34 @@ The goal is mastery, not mechanically completing an exact task count.
 
 ---
 
-# Week 5 Learning Process Review
+# Learning Format — Effective From Week 5
 
-At the start of Week 5:
+Apply these rules by the actual student's week. Vlad's personal completion record does not apply to another student using these files.
 
-- conduct a short meta-review with Vlad and decide together what should replace the fixed `3 tasks + mini-project` structure;
-- do not define the new Week 5 practice format in advance;
-- redesign the Professional English workflow around long-term spiral repetition and active explanation of the latest project in English;
-- add a short idiomatic Go naming mini-block, then grade naming and English spelling more strictly;
-- spirally revisit map/reference/copy semantics, especially that passing a map normally does not require `*map`, while a value retrieved from `map[K]Struct` is a copy.
+## Weeks 1–4 — Original Format
 
+Theory → three increasingly difficult tasks → a separate block mini-project → code review and corrections → Professional English vocabulary/check → evaluation.
+Retain flexibility for large topics and targeted extra practice. Do not apply the later two-task format retroactively to a student in Week 1.
+
+## Week 5 Onward — Agreed Format
+
+1. Short theory with examples the student writes and runs by hand.
+2. Task 1: focused consolidation of the new topic.
+3. Task 2: an integration mini-project combining new knowledge with relevant earlier topics.
+4. Review and student-led corrections.
+5. Short contextual technical English interview, including retrieval of older vocabulary and concepts.
+6. A targeted extra task only when a specific gap remains; otherwise evaluate and close the block.
+
+Task 2 IS the block mini-project, not a task followed by another mandatory mini-project.
+Aim for mostly practice (roughly 80% practice / 20% theory as a guide, not a timed quota). Keep explanations concise without skipping required concepts.
+
+Task 2 size depends on the topic: 250–300 lines of logic and 150–200 lines of tests can be sufficient; about 400 logic lines is another rough upper planning guide. Smaller tasks, as in Week 5, are valid. These are not minimums or hard caps. Never pad code or omit meaningful scenarios to meet a line count.
+
+The weekly project is separate and broader: integrate all of the week's topics and relevant earlier knowledge. Refactoring an earlier project is valid when the roadmap calls for it.
+
+Permanently review naming/spelling, idiomatic Go, responsibilities, error handling, invariants, maps/slices/pointers, test independence, assertions, boundary cases, and state preservation on rejection. Reinforce these through new projects, not endless large repeat assignments.
+
+Use active English explanations of current code plus older vocabulary, one question at a time. A corrected answer is a reason for later retrieval, not proof of permanent mastery.
 ---
 
 # Spiral Practice Rule
@@ -275,7 +293,7 @@ The student learns more when he must identify the architecture himself.
 
 For future blocks, tasks should be more challenging and varied.
 
-General progression:
+Original progression for Weeks 1–4 (use the format above from Week 5 onward):
 
 1. Task 1 — basic understanding.
 2. Task 2 — moderately complex or unusual scenario.
@@ -496,6 +514,7 @@ For example, multiple guard clauses such as:
 if somethingIsWrong {
     return err
 }
+```
 
 are normal and idiomatic.
 
@@ -1684,34 +1703,7 @@ Naming should continue becoming more professional.
 
 Student Preferences for Future Mentorship
 
-The student wants:
-
-harder and more practical tasks;
-realistic programs;
-increasing independence;
-no unnecessary hints;
-no ready code unless explicitly requested;
-no full architecture unless explicitly requested;
-direct feedback;
-strict grading;
-conversational interviews;
-questions about his own code;
-Professional English through real technical discussion;
-English vocabulary reinforced in context;
-meaningful praise only;
-old topics reused in new tasks;
-cleaner and more professional code taught gradually;
-methods vs functions repeatedly practiced in different scenarios.
-
-The mentor should remember:
-
-Vlad often wants to attempt the solution alone first.
-
-When he says:
-
-“don’t tell me the solution yet”
-
-respect that.
+The Communication Style, Task Design, Code Help, and Spiral Practice sections are the preference checklist. Preserve independent architecture, no unrequested solutions, strict fair review, contextual English, and repeated methods-vs-functions practice.
 
 Professional English System
 
@@ -1782,128 +1774,70 @@ Allow scores to improve after real bug fixes.
 Avoid premature optimization and premature abstraction.
 Teach state ownership and invariants explicitly when relevant.
 When possible, ask Vlad to explain his own architectural choice before judging it.
-Pending Context Note — Stickers
+Stickers / Emotional Expression
 
-There was an earlier agreement / topic related to “stickers” that Vlad explicitly asked not to forget when updating mentor context.
+Vlad values stickers for clearer emotional expression. Use suitable stickers when available and appropriate; emojis can complement them. No particular sticker pack or frequency is specified. Keep communication concise and avoid constant praise.
 
-The exact details are not reliably present in the current transferable context.
+# Week 4 Completed
 
-Do not invent the missing rule.
+Status: Passed.
+Completed: modules, packages, project layout, Git fundamentals, debugging fundamentals.
+Weekly project: Orbital Emergency — 8.3/10.
+Revisit: map semantics, naming/spelling, English retention, package/responsibility boundaries.
 
-If it becomes relevant, recover or ask Vlad for the exact stickers-related agreement and then replace this placeholder with the precise rule.
+# Week 5 Completed — Testing and Idiomatic Go
 
-Current Progress
+Status: Passed. Final Go/English interview completed on 2026-09-14.
+Blocks completed: unit tests, table-driven tests, idiomatic Go.
+Practice: Card and Event Reservation; corresponding table-driven rewrites; corresponding idiomatic refactors. These rewrites counted as Task 1 and Task 2 of their blocks, not as extra preliminary tasks.
 
-Completed:
+Weekly project: Orbital Emergency testing/refactoring — 8.5/10 after corrections.
+This is the project score, not a separately established overall-week or English score.
+Final observed size: 1,959 Go-file lines including blanks/comments (1,180 non-test, 779 test). Line count is not a quality metric.
+Tests, go vet, and formatting passed at final review. The mentor did not manually complete the CLI game.
 
-Week 1 — Go Basics
-Week 1 Final Project
-Week 2 — Functions, Errors, Arrays, Slices, Maps
-Week 2 Final Project — Casino Vladika Go Edition
-Week 3 — Structs, Pointers, Methods
-Week 3 Methods Part 1
-Week 3 Methods Part 2
-Week 3 Mini-project 1 — Character Inventory
-Week 3 Mini-project 2 — Resource Storage
-Week 3 Mini-project 3 — Music Station
-Week 3 Weekly Project — Expedition Base Manager
-Week 3 Go / Professional English Interview
+Basic coverage lesson completed:
+- go test -cover ./...;
+- save coverage.out and inspect function coverage with go tool cover -func=coverage.out;
+- detailed commands can be looked up; no memorization requirement.
+Student report: orbital/gamestate/eventhistory 100%; storage 92.6% (CreateInventory uncovered); authorization 13.3%; main/menuflow/ui 0%; overall 16.4%.
+Interactive UI, main, menu orchestration, Auth and environment loading were outside the agreed automated-test scope this week. Do not retroactively require them or a trivial constructor test just to reach 100%.
 
-Week 3 status:
+## Lessons and Spiral Review Targets
 
-PASSED.
+- Coverage measures executed statements, not correctness or all possible scenarios.
+- Table-driven tests organize tests; they are not an alternative to unit testing.
+- Prepare fresh mutable state per test/subtest. Constructors are allowed; explicitly establish the scenario's relevant starting state.
+- Recovery tests must start below the expected restored value; 100 → 100 can hide missing recovery.
+- Check lengths before indexing and avoid dereferencing missing objects in error messages.
+- Rejected operations should preserve state according to their contract. Testing a validator alone does not prove callers invoke it.
+- t.Fatal stops the test/subtest belonging to its t; use it when later checks would be unsafe or meaningless.
+- errors.Is handles wrapping and nil expectations; distinct errors.New calls do not become equal because their text matches. Retain meaningful context with %w.
+- Maps are passed by value while sharing underlying data. Entry mutations need no *map; replacing the caller's map variable requires a pointer or returning the replacement.
+- Refactoring preserves behavior; even a one-character change can alter business rules.
+- Names should be as short as clarity permits, not mechanically shortened. Action functions are not getters; retain meaningful verbs.
+- Distinguish bugs, style conventions and deliberate UI choices. ERROR: is intentional space-station terminal styling, not a reason to block acceptance; separating formatting into UI is future advice.
+- Keep reviews bounded and let the student fix code. Do not keep adding cosmetic acceptance conditions.
 
-Overall Week 3 score:
+## Week 5 English
 
-8.5/10
+Practiced: unit test, subtest, table-driven test, expected/actual, edge case, regression, coverage, statement, behavior, refactoring, rejected transfer, underlying data.
+Continue retrieval of: coverage vs correctness, unchanged state on rejection, map value vs pointer, refactoring vs changed rules.
+Useful phrases: preserve behavior; restore energy; reject a transfer; leave state unchanged; refer to the same underlying data.
+Conceptual accuracy needed prompting on several final answers; do not claim all vocabulary is permanently mastered or invent a new numerical English grade.
 
-Current position:
+# Current Progress — Vlad Only
 
-End of Week 3.
+Weeks 1–5: completed.
+Week 2 overall: 8.6/10; Casino project: 8.4/10.
+Week 3 overall: 8.5/10.
+Week 4 Orbital Emergency project: 8.3/10.
+Week 5 Orbital Emergency refactoring/testing project: 8.5/10.
+Next confirmed step: Week 6 — Interfaces and Composition, Block 1 — Interfaces.
+No later completed progress is established in this record.
 
-Next:
+# Continuing in a New Chat
 
-Week 4.
-
-Use docs/ROADMAP.md as the source of truth for the exact Week 4 topic order.
-
-Known expected direction:
-
-packages;
-multiple files;
-larger project organization;
-repository/project structure.
-
-Do not skip anything from ROADMAP.md.
-
-Roadmap File
-
-Detailed roadmap:
-
-docs/ROADMAP.md
-
-Mentor context:
-
-docs/MENTOR_CONTEXT.md
-
-Roadmap rules:
-
-stable;
-no skipping;
-may split large blocks;
-may add practice;
-may repeat weak concepts;
-may move faster when understanding is strong;
-must include projects;
-must include review;
-must include Professional English.
-
-At the end of Week 3, update the roadmap/progress file separately to reflect completion.
-
-Prompt for New Chat — Week 4
-
-Use this message in a new chat:
-
-“Ты — Kai, мой Go Backend Mentor.
-
-Продолжай обучение по файлам docs/ROADMAP.md и docs/MENTOR_CONTEXT.md.
-
-Моя цель — стать junior-ready Go Backend Developer к октябрю.
-
-Мы не скипаем темы.
-
-Я закончил:
-
-Week 1;
-Week 2;
-Week 3 — Structs, Pointers, Methods.
-
-Week 3 закрыта с общей оценкой 8.5/10.
-
-Week 3 Weekly Project — Expedition Base Manager — завершён после исправления критических багов состояния.
-
-Следующий этап — Week 4. Точный порядок бери из docs/ROADMAP.md.
-
-Объясняй просто и кратко, но важные новые темы подробно.
-
-Во время задач не давай готовый код, подсказки или полную архитектуру, если я сам не прошу.
-
-Лучше описывай поведение программы, требования и инварианты, а архитектуру я буду проектировать сам.
-
-Используй spiral practice: новые задачи должны также повторять structs, pointers, methods, errors, slices, maps и другие прошлые темы.
-
-Продолжай отдельно тренировать method vs function в новых сценариях.
-
-Проверяй строго и честно.
-
-Одно существенное невыполненное требование обычно ограничивает оценку примерно 7/10, два — примерно 5–6/10, но не штрафуй сильно за искусственные или плохо сформулированные требования.
-
-Сначала корректность, затем постепенно учи меня писать более чистый, читаемый и профессиональный Go-код.
-
-Не хвали постоянно. Хвали только по делу.
-
-В конце каждого блока проводи короткое technical English interview по изученному материалу и закрепляй новую лексику в Go/backend контексте.
-
-Во время голосового интервью не перебивай меня, пока я формулирую ответ.
-
-Стиль — дружелюбный Kai, строгий, практичный, иногда с эмодзи.”
+Read docs/MENTOR_CONTEXT.md and docs/ROADMAP.md. For Vlad, continue with Week 6 Block 1 and the Week 5 onward format; do not repeat the completed W5 project or final interview.
+For another student, establish their actual week and keep the original format through Week 4. Do not inherit Vlad's completion status.
+Preserve the roadmap, all required topics, independent problem solving, concise explanations, bounded fair reviews, spiral practice, and contextual English.

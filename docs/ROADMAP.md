@@ -34,6 +34,8 @@ By the end of this roadmap, the student should be able to:
 
 ## Learning Rules
 
+### Weeks 1–4 — Original Format
+
 Each block follows this structure:
 
 1. Theory first.
@@ -51,9 +53,18 @@ Each block follows this structure:
 8. Final evaluation.
 9. Move to the next block only after everything is completed.
 
-No block is skipped.
+### Week 5 Onward — Agreed Format
 
-If a topic is too large, it can be split into smaller blocks.
+Short theory with hand-written/runnable examples → Task 1 focused consolidation → Task 2 integration mini-project (new + earlier knowledge) → review/corrections → contextual English with spiral retrieval → evaluation.
+Task 2 is the block mini-project; do not add another mandatory mini-project after it. Add a targeted task only for a demonstrated gap.
+
+Practice should dominate, roughly 80/20 as a guide, not a quota. Task size is flexible: 250–300 logic lines and 150–200 test lines may be enough; about 400 logic lines is another planning guide. Smaller projects like Week 5 are valid. Do not pad code or omit important tests to meet counts.
+
+The separate weekly project integrates the week's topics and relevant prior material. Continue reviewing naming/spelling, idiomatic Go, responsibilities, errors, state invariants, map/slice/pointer semantics, and meaningful independent tests. Repeat English through explanations of current projects and older concepts.
+
+Apply the format by the actual student's week. Progress below belongs to Vlad, not another student sharing these files. Topic practice lists are examples, not additional required tasks on top of this format.
+
+No block is skipped. If a topic is too large, it can be split into smaller blocks.
 
 ---
 
@@ -409,7 +420,7 @@ The student built the first real CLI project using only Week 1 knowledge.
 
 # Week 2 — Functions, Errors, Collections
 
-Status: Current.
+Status: Completed (Vlad).
 
 Week 2 is more important and deeper than Week 1. Functions and errors should not be rushed.
 
@@ -609,6 +620,8 @@ Build a useful CLI application connected to the student's English learning.
 
 # Week 3 — Structs, Pointers, Methods
 
+Status: Completed (Vlad).
+
 ## Block 1 — Structs
 
 Topics:
@@ -723,6 +736,8 @@ Connect data and behavior using methods.
 
 # Week 4 — Packages, Modules, Project Structure
 
+Status: Completed (Vlad).
+
 ## Block 1 — Modules
 
 Topics:
@@ -789,6 +804,9 @@ Start writing projects like real Go applications.
 ---
 
 # Week 5 — Testing and Idiomatic Go
+
+Status: Completed (Vlad), including basic coverage and final Go/English interview on 2026-09-14.
+Weekly project: Orbital Emergency refactoring/testing — 8.5/10.
 
 ## Block 1 — Unit Tests
 
@@ -1395,10 +1413,23 @@ Completed:
   - Main revisit points: map semantics, naming/spelling, Professional English retention, package/responsibility boundaries
   - Status: Passed
 
-Current:
-
 - Week 5 — Testing and Idiomatic Go
+  - Unit Tests: Completed
+  - Table-Driven Tests: Completed
+  - Idiomatic Go: Completed
+  - Basic coverage: Completed
+  - Weekly Project: Orbital Emergency refactoring/testing
+  - Project Score: 8.5/10
+  - Final Go / English interview: Completed on 2026-09-14
+  - Revisit: coverage vs correctness, state preservation on rejection, map semantics, refactoring vs changed rules, naming and English
+  - Status: Passed
+
+Current position:
+
+- Weeks 1–5 completed for Vlad.
 
 Next:
 
-- Week 5 learning process review
+- Week 6 — Interfaces and Composition, Block 1 — Interfaces.
+- Apply the Week 5 onward format with spiral reviews and contextual English.
+- No later completed progress is established here.
