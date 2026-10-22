@@ -36,7 +36,7 @@ Name: Vlad
 
 Profile:
 
-- 16 years old;
+- 17 years old (birthday: October 15);
 - college programming student;
 - from Belarus;
 - learning Go Backend development;
@@ -560,11 +560,7 @@ Mentor evaluation.
 Update MENTOR_CONTEXT.md.
 Update roadmap/progress.
 
-The Go and English interview may be combined.
-
-Preferred format:
-
-A conversational technical interview, mostly in English, using the Go/backend material studied during the week.
+Preferred format for Vlad: assess technical understanding in Russian, then provide a visible English vocabulary table before contextual speaking practice. Ask one question at a time and use fresh situations rather than translating the same Russian questions. Do not lower the technical score for language difficulties or treat prompted repetition as independent mastery.
 
 The student may switch to Russian when stuck.
 
@@ -1826,18 +1822,42 @@ Continue retrieval of: coverage vs correctness, unchanged state on rejection, ma
 Useful phrases: preserve behavior; restore energy; reject a transfer; leave state unchanged; refer to the same underlying data.
 Conceptual accuracy needed prompting on several final answers; do not claim all vocabulary is permanently mastered or invent a new numerical English grade.
 
+# Week 6 Completed — Interfaces and Composition
+
+Status: Passed; final technical review and English completed on 2026-10-22.
+Blocks: Interfaces — 8/10; Composition — 8/10; Dependency Inversion Basics — 8/10.
+Practice included notifications/delivery, robots/materials/service checks, subscription access and product reservations.
+Weekly project: CLI-TranslateExercise — 8/10; overall week — 8/10.
+Built from scratch: Vlad's Week 2 project was Casino, not the roadmap's proposed vocabulary trainer. In-memory dictionary and training history; JSON/files were not required and remain for later study.
+Tests, go vet, build and scripted CLI scenarios passed at final acceptance. Size: 1,337 Go-file lines including blanks/comments (615 application, 722 tests). Minor naming/test-diagnostic issues were explicitly non-blocking; do not reopen the accepted project for cosmetic changes.
+
+## Lessons to Carry Forward
+
+- Interface method sets, pointer/value receivers, promotion, shadowing/ambiguity and interface embedding were practiced. Named dependency fields do not promote methods. Interfaces retain Go's static type checking.
+- Inject implementations from outside; services use their dependency fields. Choose small contracts from consumer needs, not one interface per struct. Permanent dependencies can be fields; per-call dependencies can be arguments.
+- Handler is a role, not a required package name. CLI manages dialogue; service operations enforce invariants even when UI is bypassed; storage owns saved data. The accepted training loop still lives in CLI: further extraction and narrower interfaces are future growth, not unfinished acceptance requirements.
+- Copy maps on storage input/output; a slice of maps needs both a new slice and copied maps. Assert collection lengths and contents; a nil error alone does not prove saving happened.
+- One bufio.Scanner handles CLI input. Scan/Text/Err, normal EOF versus read failure, TrimSpace, EqualFold and Atoi were introduced. Conversion errors permit retry; EOF/scanner failure ends reading. Interrupted training must not save a completed result.
+- English passed with support: independent copy, underlying data, preserve state, enforce an invariant, caller, expected result, propagate an error, dependency, implementation. Continue retrieval; no separate numerical English grade was established.
+
+## Additional Working Agreements
+
+- Agree bounded project scope and acceptance criteria before implementation; prioritize interesting decisions over line count. Do not add unfamiliar topics mid-project or expand accepted work with cosmetic blockers.
+- Give concise test targets (functions/behaviors); Vlad chooses cases. Introduce unfamiliar library mechanics separately when needed, then return to the task.
+- Check existing code and actual project history before assigning rewrites; the planned roadmap is not proof a project was implemented. Preserve existing rules without duplicating them.
+
 # Current Progress — Vlad Only
 
-Weeks 1–5: completed.
+Weeks 1–6: completed.
 Week 2 overall: 8.6/10; Casino project: 8.4/10.
 Week 3 overall: 8.5/10.
 Week 4 Orbital Emergency project: 8.3/10.
 Week 5 Orbital Emergency refactoring/testing project: 8.5/10.
-Next confirmed step: Week 6 — Interfaces and Composition, Block 1 — Interfaces.
-No later completed progress is established in this record.
+Week 6 overall and CLI-TranslateExercise project: 8/10; closed on 2026-10-22.
+Next confirmed step: Week 7 — Concurrency and Context, Block 1 — Goroutines (not started).
 
 # Continuing in a New Chat
 
-Read docs/MENTOR_CONTEXT.md and docs/ROADMAP.md. For Vlad, continue with Week 6 Block 1 and the Week 5 onward format; do not repeat the completed W5 project or final interview.
+Read docs/MENTOR_CONTEXT.md and docs/ROADMAP.md. For Vlad, start Week 7 Block 1 using the Week 5 onward format; do not repeat the completed Week 6 tasks, project or final Go/English interview.
 For another student, establish their actual week and keep the original format through Week 4. Do not inherit Vlad's completion status.
 Preserve the roadmap, all required topics, independent problem solving, concise explanations, bounded fair reviews, spiral practice, and contextual English.

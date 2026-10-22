@@ -917,7 +917,7 @@ Topics:
 
 Weekly project:
 
-Rewrite CLI Vocabulary Trainer using `Storage` interface.
+Rewrite CLI Vocabulary Trainer using `Storage` interface. If no earlier trainer exists, build a bounded version from scratch. Vlad completed the in-memory version; JSON/file persistence was outside his Week 6 scope.
 
 Main goal:
 
@@ -1424,12 +1424,20 @@ Completed:
   - Revisit: coverage vs correctness, state preservation on rejection, map semantics, refactoring vs changed rules, naming and English
   - Status: Passed
 
+- Week 6 — Interfaces and Composition
+  - Interfaces, Composition, Dependency Inversion Basics: Completed (8/10 each)
+  - Weekly Project: CLI-TranslateExercise, built from scratch with in-memory storage
+  - Project Score: 8/10; Overall Week: 8/10
+  - Final Go / English review: Completed on 2026-10-22; English with support
+  - Revisit: responsibility boundaries, narrow contracts, collection ownership, meaningful tests and technical English
+  - Status: Passed
+
 Current position:
 
-- Weeks 1–5 completed for Vlad.
+- Weeks 1–6 completed for Vlad.
 
 Next:
 
-- Week 6 — Interfaces and Composition, Block 1 — Interfaces.
-- Apply the Week 5 onward format with spiral reviews and contextual English.
-- No later completed progress is established here.
+- Week 7 — Concurrency and Context, Block 1 — Goroutines (not started).
+- Begin with goroutines, the go keyword, concurrent execution, sync.WaitGroup and race conditions; Channels and Context follow in their scheduled blocks.
+- Apply the Week 5 onward format with spiral reviews and vocabulary before English practice. Do not repeat accepted Week 6 work.
